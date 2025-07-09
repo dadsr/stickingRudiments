@@ -2,9 +2,9 @@ import React, {JSX} from "react";
 import {ImageBackground, StyleSheet} from "react-native";
 import {Button, Card, Divider, Text} from "react-native-paper";
 import {useRouter} from "expo-router";
-import {StickingPattern} from "../../modals/StickingPattern";
-import {usePattern} from "../../hooks/usePattern";
-import {imageMap} from "../../modals/types";
+import {StickingPattern} from "../../../modals/StickingPattern";
+import {usePattern} from "../../../hooks/usePattern";
+import {imageMap} from "../../../modals/types";
 
 
 interface patternProps {

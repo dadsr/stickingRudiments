@@ -1,19 +1,18 @@
-import React, {JSX} from "react";
+import React, {JSX, useRef} from "react";
 import {StyleSheet, View} from "react-native";
 import {Card, Surface, Text} from "react-native-paper";
-import {LimbVisualizerProps} from "../modals/types";
+import {useMetronomeContext} from "./metronom/MetronomeContext";
 
+interface VisualizerProps{
+    isKicks: boolean;
+}
 
-export default function StickingVisualizer({
-                                               currentLimb,
-                                               isPlaying,
-                                               isKicks,
-                                           }: LimbVisualizerProps): JSX.Element {
-
+export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.Element {
     console.log("StickingVisualizer()");
+    const metronomeContext = useMetronomeContext();
 
     const isActive = (limb: string) =>
-        isPlaying && (currentLimb === limb || currentLimb === "RL");
+        metronomeContext.isPlaying && (metronomeContext.currentLimb === limb);
 
     return (
         <Card style={styles.container}>

@@ -1,130 +1,67 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Limb } from "../modals/types";
 
-export const useMetronome = () => {
-    console.log("useMetronome()");
-
+export const useMetronome = (pattern: Limb[]) => {
     const [isPlaying, setIsPlaying] = useState<'play' | 'pause'>('pause');
-
     const [tempo, setTempo] = useState(0);
-    const [patternLength, setPatternLength] = useState(0);
-
     const [currentBeat, setCurrentBeat] = useState(0);
+    const [currentLimb, setCurrentLimb] = useState<Limb | null>(null);
 
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
-    const beatRef = useRef(0);
 
-
-    const initialPattern = useCallback((tempo: number, patternLength: number) => {
-        console.log("useMetronome - initialPattern");
-
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-
-        setTempo(tempo);
-        setPatternLength(patternLength);
-        setIsPlaying('pause');
-        beatRef.current = 0;
-        console.log(`tempo: ${tempo}, patternLength: ${patternLength}`,`isPlaying: ${isPlaying}, currentBeat: ${currentBeat}`);
-    }, []);
-
-    const stopMetronome = useCallback(() => {
-        console.log("useMetronome - stopMetronome");
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-        setIsPlaying('pause');
-    }, []);
-
-    const startMetronome = useCallback(() => {
-        console.log("useMetronome - startMetronome");
-        if (intervalRef.current || tempo <= 0) return;
-
-        const interval = (60 / tempo) * 1000;
-
-        intervalRef.current = setInterval(() => {
-            beatRef.current = (beatRef.current + 1) % patternLength;
-            setCurrentBeat(beatRef.current);
-        }, interval);
-
-        setIsPlaying('play');
-    }, [tempo, patternLength]);
-
-    const togglePlay = useCallback(() => {
-        console.log("useMetronome - togglePlay");
-        if (isPlaying === 'play') {
-            stopMetronome();
+    // Update currentLimb when pattern or currentBeat changes
+    useEffect(() => {
+        if (pattern.length > 0) {
+            setCurrentLimb(pattern[currentBeat]);
         } else {
-            startMetronome();
+            setCurrentLimb(null);
         }
-    }, [isPlaying, startMetronome, stopMetronome]);
+    }, [pattern, currentBeat]);
 
-    const changeTempo = useCallback((newTempo: number) => {
-        console.log("useMetronome - changeTempo");
-        setTempo(newTempo);
+    // Reset currentBeat and currentLimb when pattern changes
+    useEffect(() => {
+        setCurrentBeat(0);
+        setCurrentLimb(pattern.length ? pattern[0] : null);
+    }, [pattern]);
 
-        setIsPlaying(current => {
-            if (current === 'play') {
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current);
-                    intervalRef.current = null;
-                }
-            }
-            return current;
-        });
-    }, []);
+    // Metronome interval
+    useEffect(() => {
+        if (isPlaying === 'play' && tempo > 0 && pattern.length > 0) {
+            intervalRef.current = setInterval(() => {
+                setCurrentBeat(prev => (prev + 1) % pattern.length);
+            }, (60 / tempo) * 1000);
 
-    const reset = useCallback(() => {
-        console.log("useMetronome - reset");
-
-        if (intervalRef.current) {
+            return () => {
+                if (intervalRef.current) clearInterval(intervalRef.current);
+            };
+        } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
+    }, [isPlaying, tempo, pattern]);
 
-        // Reset all state to initial values
+    const start = () => setIsPlaying('play');
+    const stop = () => setIsPlaying('pause');
+    const togglePlay = () => setIsPlaying(prev => (prev === 'play' ? 'pause' : 'play'));
+    const changeTempo = (newTempo: number) => setTempo(newTempo);
+
+    const reset = () => {
         setIsPlaying('pause');
         setTempo(0);
-        setPatternLength(0);
         setCurrentBeat(0);
-        beatRef.current = 0;
-    }, []);
+        setCurrentLimb(pattern.length ? pattern[0] : null);
+    };
 
-    useEffect(() => {
-        if (isPlaying === 'play' && tempo > 0) {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-
-            const interval = (60 / tempo) * 1000;
-            intervalRef.current = setInterval(() => {
-                beatRef.current = (beatRef.current + 1) % patternLength;
-                setCurrentBeat(beatRef.current);
-            }, interval);
-        }
-    }, [tempo, isPlaying, patternLength]);
-
-    return useMemo(() => ({
+    return {
         isPlaying,
+        start,
+        stop,
         togglePlay,
         tempo,
         changeTempo,
         currentBeat,
-        start: startMetronome,
-        stop: stopMetronome,
-        initialPattern,
+        currentLimb,
         reset,
-    }), [
-        isPlaying,
-        togglePlay,
-        tempo,
-        changeTempo,
-        currentBeat,
-        startMetronome,
-        stopMetronome,
-        initialPattern,
-        reset,
-    ]);
+        patternLength: pattern.length,
+    };
 };

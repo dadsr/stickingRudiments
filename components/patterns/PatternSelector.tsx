@@ -1,18 +1,19 @@
 import {JSX, useEffect, useState} from "react";
 import {ActivityIndicator, Card, Divider, Snackbar} from "react-native-paper";
-import {StickingPattern} from "../modals/StickingPattern";
-import {services} from "../services/servises";
+import {StickingPattern} from "../../modals/StickingPattern";
+import {services} from "../../services/servises";
 import {Animated, StyleSheet, View} from "react-native";
 import PatternCard from "./cards/PatternCard";
 import ScrollView = Animated.ScrollView;
 import FilterPatterns from "./FilterPatterns";
-import {Difficulty} from "../modals/types";
-import {usePattern} from "../hooks/usePattern";
+import {Difficulty} from "../../modals/types";
+import {usePattern} from "../../hooks/usePattern";
 import {useRouter} from "expo-router";
 
 
 export default function PatternSelector():JSX.Element {
     console.log("PatternSelector()");
+
     const router = useRouter();
     const patternContext = usePattern();
 
@@ -33,6 +34,8 @@ export default function PatternSelector():JSX.Element {
             pathname: "/practice",
             params: {
                 pattern: JSON.stringify({
+                    name: pattern.name,
+                    isKicks: (pattern.pattern.includes('RK') || pattern.pattern.includes('LK')),
                     tempo: pattern.tempo,
                     pattern: pattern.pattern,
                     id: pattern.id

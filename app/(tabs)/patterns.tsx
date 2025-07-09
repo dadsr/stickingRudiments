@@ -1,4 +1,4 @@
-import PatternSelector from "../../components/PatternSelector";
+import PatternSelector from "../../components/patterns/PatternSelector";
 
 
 export default function Patterns(){

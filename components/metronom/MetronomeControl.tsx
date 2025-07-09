@@ -1,47 +1,53 @@
-import {JSX, useCallback, useEffect, useMemo, useRef} from "react";
-import {Card, IconButton} from "react-native-paper";
+import React, { useEffect, useMemo, useRef } from "react";
 import Slider from '@react-native-community/slider';
-import debounce from 'lodash/debounce';
-import {useMetronomeContext} from "../contexts/MetronomeContext";
+import debounce from "lodash/debounce";
+import { useMetronomeContext } from "./MetronomeContext";
+import { Card, IconButton } from "react-native-paper";
 
-export default function MetronomeControl(): JSX.Element {
-    console.log("MetronomeControl()");
+export default function MetronomeControl() {
     const metronomeContext = useMetronomeContext();
-
     const contextRef = useRef(metronomeContext);
-    contextRef.current = metronomeContext;
 
-    // Fix: Use the ref inside the debounced function
+    // Keep the latest context in ref for use inside debounce
+    useEffect(() => {
+        contextRef.current = metronomeContext;
+    }, [metronomeContext]);
+
+    // Debounced function only created once
     const debouncedOnTempoChange = useMemo(
-        () => debounce((newTempo: number) => {
-            contextRef.current.changeTempo(newTempo);
-        }, 100),
+        () =>
+            debounce((newTempo: number) => {
+                contextRef.current.changeTempo(newTempo);
+            }, 150),
         []
     );
 
-    const handlePlayPause = useCallback(() => {
-        console.log("MetronomeControl - handlePlayPause");
-        if (contextRef.current.isPlaying === "play") {
-            contextRef.current.stop();
-        } else {
-            contextRef.current.start();
-        }
-    }, []);
-
+    // Clean up debounce on unmount
     useEffect(() => {
-        console.log("MetronomeControl - useEffect");
         return () => {
             debouncedOnTempoChange.cancel();
         };
-    }, []);
+    }, [debouncedOnTempoChange]);
+
+    // Play/Pause handler
+    const handlePlayPause = () => {
+        if (metronomeContext.isPlaying === 'play') {
+            metronomeContext.stop();
+        } else {
+            metronomeContext.start();
+        }
+    };
 
     return (
-        <Card>
-            <Card.Title title="MetronomeControl" subtitle={`${metronomeContext.tempo} BPM`} />
+        <Card style={{ margin: 12 }}>
+            <Card.Title
+                title="Metronome"
+                subtitle={`${metronomeContext.tempo} BPM`}
+            />
             <Card.Content>
                 <Slider
                     style={{ width: '100%', height: 40 }}
-                    minimumValue={0}
+                    minimumValue={40}
                     maximumValue={240}
                     step={1}
                     value={metronomeContext.tempo}
@@ -52,13 +58,14 @@ export default function MetronomeControl(): JSX.Element {
                 />
             </Card.Content>
             <Card.Actions>
-                {(metronomeContext.tempo > 0) && (
+                {metronomeContext.tempo > 0 && (
                     <IconButton
                         icon={metronomeContext.isPlaying === "play" ? "pause" : "play"}
                         size={28}
                         onPress={handlePlayPause}
                         mode="contained"
                         accessibilityLabel={metronomeContext.isPlaying === "play" ? "pause" : "play"}
+                        testID="play-pause-button"
                     />
                 )}
             </Card.Actions>

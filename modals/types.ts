@@ -22,15 +22,4 @@ export interface SerializedPattern {
 }
 
 
-export type StickingProps ={
-    pattern: Limb[];
-    currentBeat: number;
-    isPlaying: "play" | "pause";
-}
 
-
-export type LimbVisualizerProps ={
-    isPlaying: "play" | "pause";
-    isKicks: boolean;
-    currentLimb: Limb;
-}
