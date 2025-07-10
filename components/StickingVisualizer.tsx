@@ -2,6 +2,8 @@ import React, {JSX, useRef} from "react";
 import {StyleSheet, View} from "react-native";
 import {Card, Surface, Text} from "react-native-paper";
 import {useMetronomeContext} from "./metronom/MetronomeContext";
+import {useAudio} from "../hooks/useAudio";
+import {Limb} from "../modals/types";
 
 interface VisualizerProps{
     isKicks: boolean;
@@ -10,9 +12,43 @@ interface VisualizerProps{
 export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.Element {
     console.log("StickingVisualizer()");
     const metronomeContext = useMetronomeContext();
+    const audioContext = useAudio();
 
-    const isActive = (limb: string) =>
-        metronomeContext.isPlaying && (metronomeContext.currentLimb === limb);
+    const isActive = (limb: Limb) =>
+        metronomeContext.isPlaying && (
+            metronomeContext.currentLimb === limb ||
+            (
+                metronomeContext.currentLimb === 'RL' &&
+                (
+                    limb === 'R' ||
+                    limb === 'L'
+                )
+            )
+        );
+
+    React.useEffect(() => {
+        if (!metronomeContext.isPlaying) return;
+        switch (metronomeContext.currentLimb) {
+            case 'R':
+                audioContext.playRightHandClick();
+                break;
+            case 'L':
+                audioContext.playLeftHandClick();
+                break;
+            case 'RL':
+                audioContext.playBothHandsClick();
+                break;
+            case 'RK':
+                audioContext.playRightKick();
+                break;
+            case 'LK':
+                audioContext.playLeftKick();
+                break;
+            default ://' '
+                audioContext.playBothHandsClick();
+                break;
+        }
+    }, [metronomeContext.currentLimb, metronomeContext.isPlaying]);
 
     return (
         <Card style={styles.container}>
@@ -20,12 +56,14 @@ export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.El
 
             <Card.Content style={styles.content}>
                 <View style={styles.row}>
+
                     {/* Right Hand */}
-                    <Card style={isActive("R") ? styles.activeCard : styles.inactiveCard}>
+                    <Card style={isActive('R') ? styles.activeCard : styles.inactiveCard}>
                         <Card.Title title="Right Hand" />
                         <Card.Content>
                             <Surface style={[styles.surface, isActive("R") && styles.activeSurface]}>
                                 <Text style={styles.limbText}>R</Text>
+                                audioContext.playRightHandClick();
                             </Surface>
                         </Card.Content>
                     </Card>
@@ -36,30 +74,34 @@ export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.El
                         <Card.Content>
                             <Surface style={[styles.surface, isActive("L") && styles.activeSurface]}>
                                 <Text style={styles.limbText}>L</Text>
+                                audioContext.playLeftHandClick();
                             </Surface>
                         </Card.Content>
                     </Card>
                 </View>
+
                 {/* Kicks */}
                 {isKicks && (
                     <View style={styles.row}>
 
                         {/* Right Kick */}
-                        <Card style={isActive("RK") ? styles.activeCard : styles.inactiveCard}>
+                        <Card style={isActive('RK') ? styles.activeCard : styles.inactiveCard}>
                             <Card.Title title="Right Kick" />
                             <Card.Content>
                                 <Surface style={[styles.surface, isActive("RK") && styles.activeSurface]}>
                                     <Text style={styles.limbText}>RK</Text>
+                                    audioContext.playRightKick();
                                 </Surface>
                             </Card.Content>
                         </Card>
 
                         {/* Left Kick */}
-                        <Card style={isActive("LK") ? styles.activeCard : styles.inactiveCard}>
+                        <Card style={isActive('LK') ? styles.activeCard : styles.inactiveCard}>
                             <Card.Title title="Left Kick" />
                             <Card.Content>
                                 <Surface style={[styles.surface, isActive("LK") && styles.activeSurface]}>
                                     <Text style={styles.limbText}>LK</Text>
+                                    audioContext.playLeftKick();
                                 </Surface>
                             </Card.Content>
                         </Card>

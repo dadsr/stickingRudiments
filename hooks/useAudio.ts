@@ -1,6 +1,6 @@
 import {AudioPlayer, useAudioPlayer} from 'expo-audio';
 import { useCallback } from 'react';
-import {bothHandsSound, leftHandSound, leftKickSound, rightHandSound, rightKickSound} from "../assets";
+import {bothHandsSound, leftHandSound, leftKickSound, noHandsSound, rightHandSound, rightKickSound} from "../assets";
 
 
 export const useAudio = () => {
@@ -9,6 +9,7 @@ export const useAudio = () => {
     const rightHandPlayer = useAudioPlayer(rightHandSound);
     const leftHandPlayer = useAudioPlayer(leftHandSound);
     const bothHandsPlayer = useAudioPlayer(bothHandsSound);
+    const noHandsPlayer = useAudioPlayer(noHandsSound);
     const rightKickPlayer = useAudioPlayer(rightKickSound);
     const leftKickPlayer = useAudioPlayer(leftKickSound);
 
@@ -34,6 +35,11 @@ export const useAudio = () => {
         playAndReset(bothHandsPlayer);
     }, [bothHandsPlayer, playAndReset]);
 
+    const playNoHandsClick = useCallback(() => {
+        console.log("useAudio - playNoHandsClick");
+        playAndReset(noHandsPlayer);
+    }, [noHandsPlayer, playAndReset]);
+
     const playRightKick = useCallback(() => {
         console.log("useAudio - playRightKick");
         playAndReset(rightKickPlayer);
@@ -48,6 +54,7 @@ export const useAudio = () => {
         playRightHandClick,
         playLeftHandClick,
         playBothHandsClick,
+        playNoHandsClick,
         playRightKick,
         playLeftKick,
     };

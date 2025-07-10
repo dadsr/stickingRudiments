@@ -11,6 +11,7 @@ export default function MetronomeControl() {
     // Keep the latest context in ref for use inside debounce
     useEffect(() => {
         contextRef.current = metronomeContext;
+        contextRef
     }, [metronomeContext]);
 
     // Debounced function only created once
@@ -47,8 +48,8 @@ export default function MetronomeControl() {
             <Card.Content>
                 <Slider
                     style={{ width: '100%', height: 40 }}
-                    minimumValue={40}
-                    maximumValue={240}
+                    minimumValue={0}
+                    maximumValue={300}
                     step={1}
                     value={metronomeContext.tempo}
                     onValueChange={value => debouncedOnTempoChange(Math.round(value))}

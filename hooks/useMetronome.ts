@@ -4,6 +4,7 @@ import { Limb } from "../modals/types";
 export const useMetronome = (pattern: Limb[]) => {
     const [isPlaying, setIsPlaying] = useState<'play' | 'pause'>('pause');
     const [tempo, setTempo] = useState(0);
+    const [patternLength, setPatternLength] = useState(0);
     const [currentBeat, setCurrentBeat] = useState(0);
     const [currentLimb, setCurrentLimb] = useState<Limb | null>(null);
 
@@ -48,6 +49,7 @@ export const useMetronome = (pattern: Limb[]) => {
     const reset = () => {
         setIsPlaying('pause');
         setTempo(0);
+        setPatternLength(0);
         setCurrentBeat(0);
         setCurrentLimb(pattern.length ? pattern[0] : null);
     };
@@ -58,10 +60,12 @@ export const useMetronome = (pattern: Limb[]) => {
         stop,
         togglePlay,
         tempo,
+        patternLength,
+        setPatternLength,
         changeTempo,
         currentBeat,
         currentLimb,
         reset,
-        patternLength: pattern.length,
+
     };
 };
