@@ -4,16 +4,15 @@ import {StickingPattern} from "../../modals/StickingPattern";
 import {services} from "../../services/servises";
 import {Animated, StyleSheet, View} from "react-native";
 import PatternCard from "./cards/PatternCard";
-import ScrollView = Animated.ScrollView;
 import FilterPatterns from "./FilterPatterns";
 import {Difficulty} from "../../modals/types";
 import {usePattern} from "../../hooks/usePattern";
 import {useRouter} from "expo-router";
+import ScrollView = Animated.ScrollView;
 
 
 export default function PatternSelector():JSX.Element {
     console.log("PatternSelector()");
-
     const router = useRouter();
     const patternContext = usePattern();
 

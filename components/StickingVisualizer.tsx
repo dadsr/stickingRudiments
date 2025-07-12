@@ -1,69 +1,82 @@
-import React, {JSX, useRef} from "react";
-import {StyleSheet, View} from "react-native";
-import {Card, Surface, Text} from "react-native-paper";
-import {useMetronomeContext} from "./metronom/MetronomeContext";
-import {useAudio} from "../hooks/useAudio";
-import {Limb} from "../modals/types";
+import React, { useState, useEffect, JSX } from "react";
+import { StyleSheet, View } from "react-native";
+import { Card, Surface, Text } from "react-native-paper";
+import { useMetronomeContext } from "./metronom/MetronomeContext";
+import { useAudio } from "../hooks/useAudio";
+import { Limb } from "../modals/types";
 
-interface VisualizerProps{
-    isKicks: boolean;
+// Define a type for our flash objects to manage visual state
+interface Flash {
+    id: number; // The beat number ensures each flash is unique
+    limb: Limb;
 }
 
-export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.Element {
-    console.log("StickingVisualizer()");
+// The component now takes the pattern as a prop
+interface VisualizerProps {
+    pattern: Limb[];
+}
+
+export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.Element {
     const metronomeContext = useMetronomeContext();
     const audioContext = useAudio();
+    const [flashes, setFlashes] = useState<Flash[]>([]);
+    const isKicks = pattern.some(limb => limb === 'LK' || limb === 'RK');
 
-    const isActive = (limb: Limb) =>
-        metronomeContext.isPlaying && (
-            metronomeContext.currentLimb === limb ||
-            (
-                metronomeContext.currentLimb === 'RL' &&
-                (
-                    limb === 'R' ||
-                    limb === 'L'
-                )
-            )
-        );
-
-    React.useEffect(() => {
+    useEffect(() => {
         if (!metronomeContext.isPlaying) return;
         switch (metronomeContext.currentLimb) {
-            case 'R':
-                audioContext.playRightHandClick();
-                break;
-            case 'L':
-                audioContext.playLeftHandClick();
-                break;
-            case 'RL':
-                audioContext.playBothHandsClick();
-                break;
-            case 'RK':
-                audioContext.playRightKick();
-                break;
-            case 'LK':
-                audioContext.playLeftKick();
-                break;
-            default ://' '
-                audioContext.playBothHandsClick();
-                break;
+            case 'R': audioContext.playRightHandClick(); break;
+            case 'L': audioContext.playLeftHandClick(); break;
+            case 'RL': audioContext.playBothHandsClick(); break;
+            case 'RK': audioContext.playRightKick(); break;
+            case 'LK': audioContext.playLeftKick(); break;
+            case ' ': audioContext.playNoHandsClick(); break;
+            default: break;
         }
-    }, [metronomeContext.currentLimb, metronomeContext.isPlaying]);
+    }, [metronomeContext.currentBeat, metronomeContext.isPlaying]);
+
+    // This effect manages the visual "flash" for each beat.
+    useEffect(() => {
+        if (!metronomeContext.isPlaying || !metronomeContext.currentLimb) {
+            setFlashes([]); // Clear flashes when the metronome stops
+            return;
+        }
+
+        const currentBeat = metronomeContext.currentBeat;
+        const newFlash: Flash = { id: currentBeat, limb: metronomeContext.currentLimb };
+
+        // Add a new flash for the current beat
+        setFlashes(prev => [...prev, newFlash]);
+
+        // Schedule the removal of this specific flash to create a timed pulse
+        const timer = setTimeout(() => {
+            setFlashes(prev => prev.filter(flash => flash.id !== currentBeat));
+        }, 150); // The flash will last for 150ms
+
+        // Clean up the timer if the effect re-runs or the component unmounts
+        return () => clearTimeout(timer);
+
+    }, [metronomeContext.currentBeat, metronomeContext.isPlaying]);
+
+    // `isActive` now checks if there's an active flash for a given limb.
+    const isActive = (limb: Limb): boolean => {
+        return flashes.some(flash =>
+            flash.limb === limb ||
+            (flash.limb === 'RL' && (limb === 'R' || limb === 'L'))
+        );
+    };
 
     return (
         <Card style={styles.container}>
             <Card.Title titleStyle={styles.title} title="Visual" />
-
             <Card.Content style={styles.content}>
                 <View style={styles.row}>
-
                     {/* Right Hand */}
                     <Card style={isActive('R') ? styles.activeCard : styles.inactiveCard}>
                         <Card.Title title="Right Hand" />
                         <Card.Content>
                             <Surface style={[styles.surface, isActive("R") && styles.activeSurface]}>
                                 <Text style={styles.limbText}>R</Text>
-                                audioContext.playRightHandClick();
                             </Surface>
                         </Card.Content>
                     </Card>
@@ -74,7 +87,6 @@ export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.El
                         <Card.Content>
                             <Surface style={[styles.surface, isActive("L") && styles.activeSurface]}>
                                 <Text style={styles.limbText}>L</Text>
-                                audioContext.playLeftHandClick();
                             </Surface>
                         </Card.Content>
                     </Card>
@@ -83,14 +95,12 @@ export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.El
                 {/* Kicks */}
                 {isKicks && (
                     <View style={styles.row}>
-
                         {/* Right Kick */}
                         <Card style={isActive('RK') ? styles.activeCard : styles.inactiveCard}>
                             <Card.Title title="Right Kick" />
                             <Card.Content>
                                 <Surface style={[styles.surface, isActive("RK") && styles.activeSurface]}>
                                     <Text style={styles.limbText}>RK</Text>
-                                    audioContext.playRightKick();
                                 </Surface>
                             </Card.Content>
                         </Card>
@@ -101,7 +111,6 @@ export default function StickingVisualizer({ isKicks }: VisualizerProps): JSX.El
                             <Card.Content>
                                 <Surface style={[styles.surface, isActive("LK") && styles.activeSurface]}>
                                     <Text style={styles.limbText}>LK</Text>
-                                    audioContext.playLeftKick();
                                 </Surface>
                             </Card.Content>
                         </Card>
@@ -141,7 +150,6 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: "#1976d2",
         backgroundColor: "rgb(236,242,0)",
-        //backgroundColor: "#e3f2fd",
     },
     inactiveCard: {
         width: "48%",
@@ -164,13 +172,10 @@ const styles = StyleSheet.create({
         elevation: 6,
         backgroundColor: "#fabbfb",
         borderRadius: 25,
-        //backgroundColor: "#bbdefb",
     },
     limbText: {
         fontSize: 25,
         fontWeight: "bold",
         color: "#1976d2",
     },
-
-
 });

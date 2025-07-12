@@ -1,13 +1,14 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import MetronomeControl from "../../components/metronom/MetronomeControl";
 import {MetronomeProvider} from "../../components/metronom/MetronomeContext";
-import StickingVisualizer from "../../components/StickingVisualizer";
 import {useLocalSearchParams} from "expo-router";
-import StickingNotation from "../../components/StickingNotation";
 import {Limb} from "../../modals/types";
 import {Text} from "react-native-paper";
 import {Pressable, View} from "react-native";
-import DraggableFlatList, {RenderItemParams} from "react-native-draggable-flatlist";
+import DraggableFlatList, {RenderItemParams,} from "react-native-draggable-flatlist";
+import StickingVisualizer from "../../components/StickingVisualizer";
+import StickingNotation from "../../components/StickingNotation";
+import BeatCounter from "../../components/BeatCounter";
 
 interface PatternParam {
     name: string;
@@ -16,43 +17,64 @@ interface PatternParam {
     pattern: Limb[];
     id: string;
 }
+interface DraggableItem {
+    key: string;
+    component: React.JSX.Element;
+}
 
 export default function Practice() {
     const params = useLocalSearchParams();
-    const patternData = JSON.parse(
-        Array.isArray(params.pattern) ? params.pattern[0] : params.pattern
-    ) as PatternParam;
-    console.log(params.pattern)
+    const patternJson = Array.isArray(params.pattern)
+        ? params.pattern[0]
+        : params.pattern;
 
-    const { id, name, isKicks, pattern } = patternData;
-    console.log(`id: ${id}, name: ${name}, kicks: ${isKicks}, pattern: ${pattern}`)
+    const [items, setItems] = useState<DraggableItem[]>([]);
+    const [patternData, setPatternData] = useState<PatternParam | null>(null);
 
-    const INITIAL_COMPONENTS = [
-        { key: 'metronome', component: <MetronomeControl /> },
-        { key: 'visualizer', component: <StickingVisualizer isKicks={isKicks} /> },
-        { key: 'notation', component: <StickingNotation pattern={pattern as Limb[]} /> },
-    ];
+    useEffect(() => {
+        if (patternJson) {
+            const parsedData = JSON.parse(patternJson) as PatternParam;
+            setPatternData(parsedData);
 
-    const [items, setItems] = useState(INITIAL_COMPONENTS);
+            const newComponents: DraggableItem[] = [
+                {
+                    key: "metronome",
+                    component: <MetronomeControl initTempo={parsedData.tempo} />,
+                },
+                {
+                    key: 'counter',
+                    component: <BeatCounter totalBeats={parsedData.pattern.length} />
+                },
+                {
+                    key: 'visualizer',
+                    component: <StickingVisualizer pattern={parsedData.pattern as Limb[]} />
+                },
+                {
+                    key: 'notation',
+                    component: <StickingNotation pattern={parsedData.pattern as Limb[]} />
+                },
+            ];
+            setItems(newComponents);
+        }
+    }, [patternJson]);
+
+    if (!patternData) {
+        return null;
+    }
 
     return (
-        <MetronomeProvider pattern={pattern}>
-            <View style={{ flex: 1, padding: 16 }}>
-                <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>
-                    {name} (ID: {id})
+
+        <MetronomeProvider key={patternData.id} pattern={patternData.pattern}>
+            <View style={{ flex: 1 }}>
+                <Text>
+                    {patternData.name} (ID: {patternData.id})
                 </Text>
                 <DraggableFlatList
                     data={items}
                     onDragEnd={({ data }) => setItems(data)}
-                    keyExtractor={item => item.key}
+                    keyExtractor={(item) => item.key}
                     renderItem={({ item, drag, isActive }: RenderItemParams<any>) => (
-                        <Pressable
-                            style={{
-                                opacity: isActive ? 0.7 : 1,
-                                marginBottom: 16,
-                            }}
-                            onLongPress={drag}
-                        >
+                        <Pressable onLongPress={drag} disabled={isActive}>
                             {item.component}
                         </Pressable>
                     )}

@@ -1,5 +1,5 @@
 
-export type Limb = ' '|'R' | 'L' | 'RL' | 'RK' | 'LK' ;
+export type Limb = " "|"R" | "L" | "RL" | "RK" | "LK" ;
 export type Difficulty = 'very easy' | 'easy' | 'intermediate' | 'difficult' | 'crazy';
 
 export type ImageKey = '1.png' | '2.png' | '3.png' | '4.png';

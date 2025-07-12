@@ -1,36 +1,30 @@
-import React, { useEffect, useMemo, useRef } from "react";
-import Slider from '@react-native-community/slider';
-import debounce from "lodash/debounce";
-import { useMetronomeContext } from "./MetronomeContext";
-import { Card, IconButton } from "react-native-paper";
+import React, {useEffect, useState} from "react";
+import {useMetronomeContext} from "./MetronomeContext";
+import {Card, IconButton, Text} from "react-native-paper";
+import Slider from "@react-native-community/slider";
 
-export default function MetronomeControl() {
+interface metronomeProps {
+    initTempo: number;
+}
+
+export default function MetronomeControl({ initTempo }: metronomeProps) {
     const metronomeContext = useMetronomeContext();
-    const contextRef = useRef(metronomeContext);
+    const [sliderValue, setSliderValue] = useState(initTempo);
 
-    // Keep the latest context in ref for use inside debounce
     useEffect(() => {
-        contextRef.current = metronomeContext;
-        contextRef
-    }, [metronomeContext]);
+        if (initTempo > 0) {
+            metronomeContext.changeTempo(initTempo);
+        }
+    }, [initTempo]);
 
-    // Debounced function only created once
-    const debouncedOnTempoChange = useMemo(
-        () =>
-            debounce((newTempo: number) => {
-                contextRef.current.changeTempo(newTempo);
-            }, 150),
-        []
-    );
-
-    // Clean up debounce on unmount
     useEffect(() => {
-        return () => {
-            debouncedOnTempoChange.cancel();
-        };
-    }, [debouncedOnTempoChange]);
+        setSliderValue(metronomeContext.tempo);
+    }, [metronomeContext.tempo]);
 
-    // Play/Pause handler
+    const handleSlidingComplete = (value: number) => {
+        metronomeContext.changeTempo(Math.round(value));
+    };
+
     const handlePlayPause = () => {
         if (metronomeContext.isPlaying === 'play') {
             metronomeContext.stop();
@@ -40,36 +34,29 @@ export default function MetronomeControl() {
     };
 
     return (
-        <Card style={{ margin: 12 }}>
-            <Card.Title
-                title="Metronome"
-                subtitle={`${metronomeContext.tempo} BPM`}
-            />
+        <Card>
             <Card.Content>
-                <Slider
-                    style={{ width: '100%', height: 40 }}
-                    minimumValue={0}
-                    maximumValue={300}
-                    step={1}
-                    value={metronomeContext.tempo}
-                    onValueChange={value => debouncedOnTempoChange(Math.round(value))}
-                    minimumTrackTintColor="#6200ee"
-                    maximumTrackTintColor="#bdbdbd"
-                    thumbTintColor="#6200ee"
+                {sliderValue > 0 && (
+                    <>
+                        <Text>Tempo: {Math.round(sliderValue)} BPM</Text>
+                        <Slider
+                            style={{ width: '100%', height: 40 }}
+                            minimumValue={40}
+                            maximumValue={240}
+                            step={1}
+                            value={sliderValue}
+                            onValueChange={setSliderValue}
+                            onSlidingComplete={handleSlidingComplete}
+                        />
+                    </>
+                )}
+                <IconButton
+                    icon={metronomeContext.isPlaying === 'play' ? 'pause' : 'play'}
+                    size={40}
+                    iconColor={"#1976d2"}
+                    onPress={handlePlayPause}
                 />
             </Card.Content>
-            <Card.Actions>
-                {metronomeContext.tempo > 0 && (
-                    <IconButton
-                        icon={metronomeContext.isPlaying === "play" ? "pause" : "play"}
-                        size={28}
-                        onPress={handlePlayPause}
-                        mode="contained"
-                        accessibilityLabel={metronomeContext.isPlaying === "play" ? "pause" : "play"}
-                        testID="play-pause-button"
-                    />
-                )}
-            </Card.Actions>
         </Card>
     );
 }
