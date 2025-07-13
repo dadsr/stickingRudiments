@@ -5,7 +5,7 @@ import {services} from "../../services/servises";
 import {Animated, StyleSheet, View} from "react-native";
 import PatternCard from "./cards/PatternCard";
 import FilterPatterns from "./FilterPatterns";
-import {Difficulty} from "../../modals/types";
+import {Difficulty, Importance} from "../../modals/types";
 import {usePattern} from "../../hooks/usePattern";
 import {useRouter} from "expo-router";
 import ScrollView = Animated.ScrollView;
@@ -20,24 +20,24 @@ export default function PatternSelector():JSX.Element {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
     const [stickingPatterns, setStickingPatterns] = useState<StickingPattern[]>([]);
+    const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | null>(null);
+    const [importanceFilter, setImportanceFilter] = useState<Importance | null>(null);
 
-    const [filter, setFilter] = useState<Difficulty | null>(null);
-    const filteredPatterns = filter
-        ? stickingPatterns.filter(p => p.difficulty === filter)
-        : stickingPatterns;
+    const filteredPatterns = stickingPatterns.filter(p =>
+        (!difficultyFilter || p.difficulty === difficultyFilter) &&
+        (!importanceFilter || p.importance === importanceFilter)
+    );
 
     const handleSelect = (pattern: StickingPattern) => {
-        console.log("PatternSelector - handleSelect");
         patternContext.setPattern(pattern);
         router.push({
             pathname: "/practice",
             params: {
                 pattern: JSON.stringify({
+                    id: pattern.id,
                     name: pattern.name,
-                    isKicks: (pattern.pattern.includes('RK') || pattern.pattern.includes('LK')),
                     tempo: pattern.tempo,
-                    pattern: pattern.pattern,
-                    id: pattern.id
+                    pattern: pattern.notes,
                 })
             }
         });
@@ -57,8 +57,6 @@ export default function PatternSelector():JSX.Element {
     }
 
     useEffect(() => {
-        console.log("PatternSelector - useEffect");
-
         services.getPatterns()
             .then((fetchedPatterns:StickingPattern[]) => {
                 setStickingPatterns(fetchedPatterns);
@@ -76,7 +74,12 @@ export default function PatternSelector():JSX.Element {
 
     return (
         <View>
-            <FilterPatterns filter={filter} setFilter={setFilter} />
+            <FilterPatterns
+                difficulty = {difficultyFilter}
+                setDifficulty = {setDifficultyFilter}
+                importance = {importanceFilter}
+                setImportance = {setImportanceFilter}
+            />
             <ScrollView>
                 <Card>
                     <Card.Title title=" " subtitle="select sticking pattern to practice" />
@@ -108,7 +111,6 @@ export default function PatternSelector():JSX.Element {
                 >
                     Pattern cleared successfully!
                 </Snackbar>
-
             </ScrollView>
         </View>
     )

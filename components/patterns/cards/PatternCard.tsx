@@ -4,7 +4,7 @@ import {Button, Card, Divider, Text} from "react-native-paper";
 import {useRouter} from "expo-router";
 import {StickingPattern} from "../../../modals/StickingPattern";
 import {usePattern} from "../../../hooks/usePattern";
-import {imageMap} from "../../../modals/types";
+import {imageMap, PatternNote} from "../../../modals/types";
 
 
 interface patternProps {
@@ -34,13 +34,23 @@ const PatternCard = React.memo( function PatternCard ({patternContext, router, p
                 >
                     <Card.Title
                         title={`${pattern.name} (${pattern.id})`}
-                        subtitle={pattern.difficulty}
+                        subtitle={`Importance: ${pattern.importance} - Difficulty: ${pattern.difficulty}`}
                     />
 
                     <Card.Content style={styles.content}>
                         <Text variant="bodyMedium">{pattern.description}</Text>
                         <Divider/>
-                        <Text variant="bodySmall">{pattern.pattern.join(", ") }</Text>
+                        {pattern.notes.map((n:PatternNote, idx:number) => (
+                            <Text
+                                key={idx}
+                                style={n.accent ? styles.accentedNote : styles.normalNote}
+                            >
+                                {n.limb}
+                            </Text>
+                        ))}
+                        <Text variant="bodySmall">
+                            {pattern.notes.map((note, index) => (", ")) }
+                        </Text>
                         <Divider/>
                         <Text variant="bodyMedium">{pattern.tempo}</Text>
                     </Card.Content>
@@ -76,6 +86,18 @@ const styles = StyleSheet.create({
         // Adjust height as needed
         minHeight: 150,
         justifyContent: "center",
+    },
+    accentedNote: {
+        fontWeight: "bold",
+        fontStyle: "italic",
+        fontSize:24,
+        color: "black",
+    },
+    normalNote: {
+        fontWeight: "normal",
+        fontStyle: "normal",
+        fontSize:20,
+        color: "blue",
     },
 
 })

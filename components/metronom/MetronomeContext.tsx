@@ -1,12 +1,12 @@
-import React, {createContext, useContext, ReactNode, JSX} from "react";
-import { useMetronome } from "../../hooks/useMetronome";
-import {Limb} from "../../modals/types";
+import React, {createContext, ReactNode, useContext} from "react";
+import {useMetronome} from "../../hooks/useMetronome";
+import {PatternNote} from "../../modals/types";
 
 type MetronomeContextType = ReturnType<typeof useMetronome>;
 
  interface metronomeProps{
      children: ReactNode;
-     pattern: Limb[];
+     pattern: PatternNote[];
  }
 
 const MetronomeContext = createContext<MetronomeContextType | undefined>(undefined);

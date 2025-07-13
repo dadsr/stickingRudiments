@@ -1,9 +1,9 @@
-import React, { useState, useEffect, JSX } from "react";
-import { StyleSheet, View } from "react-native";
-import { Card, Surface, Text } from "react-native-paper";
-import { useMetronomeContext } from "./metronom/MetronomeContext";
-import { useAudio } from "../hooks/useAudio";
-import { Limb } from "../modals/types";
+import React, {JSX, useEffect, useState} from "react";
+import {StyleSheet, View} from "react-native";
+import {Card, Surface, Switch, Text} from "react-native-paper";
+import {useMetronomeContext} from "./metronom/MetronomeContext";
+import {useAudio} from "../hooks/useAudio";
+import {Limb, PatternNote} from "../modals/types";
 
 // Define a type for our flash objects to manage visual state
 interface Flash {
@@ -13,17 +13,18 @@ interface Flash {
 
 // The component now takes the pattern as a prop
 interface VisualizerProps {
-    pattern: Limb[];
+    pattern: PatternNote[];
 }
 
 export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.Element {
     const metronomeContext = useMetronomeContext();
     const audioContext = useAudio();
     const [flashes, setFlashes] = useState<Flash[]>([]);
-    const isKicks = pattern.some(limb => limb === 'LK' || limb === 'RK');
+    const isKicks = pattern.some(note => note.limb === 'LK' || note.limb === 'RK');
+    const [playSounds,setPlaySounds] = useState<boolean>(true);
 
     useEffect(() => {
-        if (!metronomeContext.isPlaying) return;
+        if (metronomeContext.isPlaying === 'pause' || playSounds === false) return;
         switch (metronomeContext.currentLimb) {
             case 'R': audioContext.playRightHandClick(); break;
             case 'L': audioContext.playLeftHandClick(); break;
@@ -38,7 +39,7 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     // This effect manages the visual "flash" for each beat.
     useEffect(() => {
         if (!metronomeContext.isPlaying || !metronomeContext.currentLimb) {
-            setFlashes([]); // Clear flashes when the metronome stops
+            setFlashes([]);
             return;
         }
 
@@ -58,11 +59,40 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
 
     }, [metronomeContext.currentBeat, metronomeContext.isPlaying]);
 
-    // `isActive` now checks if there's an active flash for a given limb.
-    const isActive = (limb: Limb): boolean => {
-        return flashes.some(flash =>
+    const getStatus = (limb: Limb): { active: boolean; accented: boolean } => {
+        const flash = flashes.find(flash =>
             flash.limb === limb ||
             (flash.limb === 'RL' && (limb === 'R' || limb === 'L'))
+        );
+        if (!flash) {
+            return { active: false, accented: false };
+        }
+
+        const currentNote = pattern[flash.id];
+        const accented =
+            !!currentNote &&
+            (currentNote.limb === limb ||
+                (currentNote.limb === 'RL' && (limb === 'R' || limb === 'L'))) &&
+            !!currentNote.accent;
+
+        return { active: true, accented };
+    };
+
+    const onSoundsToggleSwitch=() => {
+        setPlaySounds(!playSounds);
+    }
+    const renderLimbCard = (limb: Limb, label: string) => {
+        const { active, accented } = getStatus(limb);
+        return (
+            <Card style={active ? styles.activeCard : styles.inactiveCard}>
+                <Card.Title title={label} />
+                <Card.Content>
+                    <Surface style={[styles.surface, active && styles.activeSurface]}>
+                        {accented && <Text style={styles.accentMark}>›</Text>}
+                        <Text style={[styles.limbText, accented && styles.accentText]}>{limb}</Text>
+                    </Surface>
+                </Card.Content>
+            </Card>
         );
     };
 
@@ -70,50 +100,15 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
         <Card style={styles.container}>
             <Card.Title titleStyle={styles.title} title="Visual" />
             <Card.Content style={styles.content}>
+                <Switch value={playSounds} onValueChange={onSoundsToggleSwitch} />
                 <View style={styles.row}>
-                    {/* Right Hand */}
-                    <Card style={isActive('R') ? styles.activeCard : styles.inactiveCard}>
-                        <Card.Title title="Right Hand" />
-                        <Card.Content>
-                            <Surface style={[styles.surface, isActive("R") && styles.activeSurface]}>
-                                <Text style={styles.limbText}>R</Text>
-                            </Surface>
-                        </Card.Content>
-                    </Card>
-
-                    {/* Left Hand */}
-                    <Card style={isActive("L") ? styles.activeCard : styles.inactiveCard}>
-                        <Card.Title title="Left Hand" />
-                        <Card.Content>
-                            <Surface style={[styles.surface, isActive("L") && styles.activeSurface]}>
-                                <Text style={styles.limbText}>L</Text>
-                            </Surface>
-                        </Card.Content>
-                    </Card>
+                    {renderLimbCard('R', 'Right Hand')}
+                    {renderLimbCard('L', 'Left Hand')}
                 </View>
-
-                {/* Kicks */}
                 {isKicks && (
                     <View style={styles.row}>
-                        {/* Right Kick */}
-                        <Card style={isActive('RK') ? styles.activeCard : styles.inactiveCard}>
-                            <Card.Title title="Right Kick" />
-                            <Card.Content>
-                                <Surface style={[styles.surface, isActive("RK") && styles.activeSurface]}>
-                                    <Text style={styles.limbText}>RK</Text>
-                                </Surface>
-                            </Card.Content>
-                        </Card>
-
-                        {/* Left Kick */}
-                        <Card style={isActive('LK') ? styles.activeCard : styles.inactiveCard}>
-                            <Card.Title title="Left Kick" />
-                            <Card.Content>
-                                <Surface style={[styles.surface, isActive("LK") && styles.activeSurface]}>
-                                    <Text style={styles.limbText}>LK</Text>
-                                </Surface>
-                            </Card.Content>
-                        </Card>
+                        {renderLimbCard('RK', 'Right Kick')}
+                        {renderLimbCard('LK', 'Left Kick')}
                     </View>
                 )}
             </Card.Content>
@@ -178,4 +173,20 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#1976d2",
     },
+    accentText: {
+        color: "#e53935",
+        textShadowColor: "#fbc02d",
+        textShadowRadius: 4,
+    },
+    accentMark: {
+        position: "absolute",
+        top: -10,
+        left: "50%",
+        transform: [{ translateX: -8 }],
+        fontSize: 18,
+        color: "#e53935",
+        fontWeight: "bold",
+        zIndex: 2,
+    },
+
 });

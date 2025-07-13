@@ -2,7 +2,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {defaultPatterns} from "../data/stickingPatterns";
 import {StickingPattern} from "../modals/StickingPattern";
-import {ImageKey, SerializedPattern} from "../modals/types";
+import {ImageKey, PatternNote, SerializedPattern} from "../modals/types";
 
 
 
@@ -24,7 +24,7 @@ export class Services {
 
 
     async getPatterns(): Promise<StickingPattern[]>{
-            console.log("getPatterns()");
+        console.log("getPatterns()");
         try{
             const storedPatterns = await AsyncStorage.getItem("stickingPatterns");
 
@@ -97,9 +97,10 @@ export class Services {
             serialized.id,
             serialized.name,
             serialized.description,
+            serialized.importance,
             serialized.difficulty,
             serialized.backgroundImage as ImageKey,
-            serialized.pattern,
+            serialized.notes,
             serialized.tempo,
         );
     }
@@ -109,9 +110,10 @@ export class Services {
             id: pattern.id,
             name: pattern.name,
             description: pattern.description,
+            importance: pattern.importance,
             difficulty: pattern.difficulty,
             backgroundImage: pattern.backgroundImage,
-            pattern: pattern.pattern,
+            notes: pattern.notes,
             tempo: pattern.tempo
         };
     }

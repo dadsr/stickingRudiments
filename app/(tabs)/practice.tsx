@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import MetronomeControl from "../../components/metronom/MetronomeControl";
 import {MetronomeProvider} from "../../components/metronom/MetronomeContext";
 import {useLocalSearchParams} from "expo-router";
-import {Limb} from "../../modals/types";
+import {PatternNote} from "../../modals/types";
 import {Text} from "react-native-paper";
 import {Pressable, View} from "react-native";
 import DraggableFlatList, {RenderItemParams,} from "react-native-draggable-flatlist";
@@ -11,11 +11,11 @@ import StickingNotation from "../../components/StickingNotation";
 import BeatCounter from "../../components/BeatCounter";
 
 interface PatternParam {
+    id: string;
     name: string;
     isKicks: boolean;
     tempo: number;
-    pattern: Limb[];
-    id: string;
+    pattern: PatternNote[];
 }
 interface DraggableItem {
     key: string;
@@ -47,11 +47,11 @@ export default function Practice() {
                 },
                 {
                     key: 'visualizer',
-                    component: <StickingVisualizer pattern={parsedData.pattern as Limb[]} />
+                    component: <StickingVisualizer pattern={parsedData.pattern as PatternNote[]} />
                 },
                 {
                     key: 'notation',
-                    component: <StickingNotation pattern={parsedData.pattern as Limb[]} />
+                    component: <StickingNotation pattern={parsedData.pattern as PatternNote[]} />
                 },
             ];
             setItems(newComponents);

@@ -12,11 +12,9 @@ export const usePattern = (initialPattern: StickingPattern|null = null) =>{
     useEffect(() => {
         console.log("usePattern - useEffect");
         if(pattern) {
-            setPatternLength(pattern.pattern.length);
-            setIsKicks(pattern.pattern.includes('RK') || pattern.pattern.includes('LK'));
+            setPatternLength(pattern.notes.length);
         }
-        console.log(`pattern: ${pattern}, patternLength: ${patternLength} `)
     }, [pattern]);
 
-    return { pattern, patternLength, isKicks, setPattern };
+    return { pattern, patternLength, setPattern };
 };

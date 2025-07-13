@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
-import {useMetronomeContext} from "./MetronomeContext";
-import {Card, IconButton, Text} from "react-native-paper";
-import Slider from "@react-native-community/slider";
+import React, { useEffect, useState, useRef } from "react";
+import { useMetronomeContext } from "./MetronomeContext";
+import { Card, IconButton, Text } from "react-native-paper";
+import { Modal, View, StyleSheet,FlatList, TouchableOpacity } from "react-native";
+import BpmRoller from "./BpmRoller";
 
 interface metronomeProps {
     initTempo: number;
@@ -9,7 +10,12 @@ interface metronomeProps {
 
 export default function MetronomeControl({ initTempo }: metronomeProps) {
     const metronomeContext = useMetronomeContext();
-    const [sliderValue, setSliderValue] = useState(initTempo);
+    const [tempoValue, setTempoValue] = useState(initTempo);
+
+    const [isCountingDown, setIsCountingDown] = useState(false);
+    const [countdown, setCountdown] = useState(3);
+
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         if (initTempo > 0) {
@@ -18,35 +24,77 @@ export default function MetronomeControl({ initTempo }: metronomeProps) {
     }, [initTempo]);
 
     useEffect(() => {
-        setSliderValue(metronomeContext.tempo);
+        setTempoValue(metronomeContext.tempo);
     }, [metronomeContext.tempo]);
+
+
+    useEffect(() => {
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
+    }, []);
+
+    const startCountdown = () => {
+        setIsCountingDown(true);
+        setCountdown(3);
+
+        intervalRef.current = setInterval(() => {
+            setCountdown((prevCountdown) => {
+                const nextValue = prevCountdown - 1;
+                if (nextValue === 0) {
+                    if (intervalRef.current) clearInterval(intervalRef.current);
+                    setIsCountingDown(false);
+                    metronomeContext.start();
+                }
+                return nextValue;
+            });
+        }, 1000);
+    };
 
     const handleSlidingComplete = (value: number) => {
         metronomeContext.changeTempo(Math.round(value));
     };
 
     const handlePlayPause = () => {
-        if (metronomeContext.isPlaying === 'play') {
+        if (metronomeContext.isPlaying === 'play' || isCountingDown) {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+            setIsCountingDown(false);
             metronomeContext.stop();
         } else {
-            metronomeContext.start();
+            startCountdown();
         }
     };
 
     return (
         <Card>
-            <Card.Content>
-                {sliderValue > 0 && (
+            <Card.Content style={{ alignItems: 'center' }}>
+                {/* Countdown Modal */}
+                <Modal
+                    transparent={true}
+                    animationType="fade"
+                    visible={isCountingDown}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.countdownText}>{countdown}</Text>
+                        </View>
+                    </View>
+                </Modal>
+
+                {/* Metronome Controls */}
+                {tempoValue > 0 && (
                     <>
-                        <Text>Tempo: {Math.round(sliderValue)} BPM</Text>
-                        <Slider
-                            style={{ width: '100%', height: 40 }}
-                            minimumValue={40}
-                            maximumValue={240}
-                            step={1}
-                            value={sliderValue}
-                            onValueChange={setSliderValue}
-                            onSlidingComplete={handleSlidingComplete}
+                        <Text>Tempo: {Math.round(tempoValue)} BPM</Text>
+                        <BpmRoller
+                            selected={tempoValue}
+                            onSelect={(value) => {
+                                setTempoValue(value);
+                                metronomeContext.changeTempo(value);
+                            }}
                         />
                     </>
                 )}
@@ -60,3 +108,21 @@ export default function MetronomeControl({ initTempo }: metronomeProps) {
         </Card>
     );
 }
+
+const styles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        padding: 20,
+        borderRadius: 10,
+    },
+    countdownText: {
+        fontSize: 96,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+});
