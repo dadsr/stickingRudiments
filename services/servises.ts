@@ -9,6 +9,8 @@ import {ImageKey, PatternNote, SerializedPattern} from "../modals/types";
 export class Services {
 
     constructor() {
+        //todo cleaning
+        this.clearPatterns();
         this.initDefaultsIfNeeded();
     }
 

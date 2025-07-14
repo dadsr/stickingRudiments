@@ -9,6 +9,7 @@ import DraggableFlatList, {RenderItemParams,} from "react-native-draggable-flatl
 import StickingVisualizer from "../../components/StickingVisualizer";
 import StickingNotation from "../../components/StickingNotation";
 import BeatCounter from "../../components/BeatCounter";
+import BarsCounter from "../../components/BarsCounter";
 
 interface PatternParam {
     id: string;
@@ -42,7 +43,11 @@ export default function Practice() {
                     component: <MetronomeControl initTempo={parsedData.tempo} />,
                 },
                 {
-                    key: 'counter',
+                    key: 'bars counter',
+                    component: <BarsCounter />
+                },
+                {
+                    key: 'beat counter',
                     component: <BeatCounter totalBeats={parsedData.pattern.length} />
                 },
                 {

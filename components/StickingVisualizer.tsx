@@ -20,7 +20,7 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     const metronomeContext = useMetronomeContext();
     const audioContext = useAudio();
     const [flashes, setFlashes] = useState<Flash[]>([]);
-    const isKicks = pattern.some(note => note.limb === 'LK' || note.limb === 'RK');
+    const footWork: boolean = pattern.some(note => note.limb === 'LF' || note.limb === 'RF');
     const [playSounds,setPlaySounds] = useState<boolean>(true);
 
     useEffect(() => {
@@ -28,9 +28,9 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
         switch (metronomeContext.currentLimb) {
             case 'R': audioContext.playRightHandClick(); break;
             case 'L': audioContext.playLeftHandClick(); break;
-            case 'RL': audioContext.playBothHandsClick(); break;
-            case 'RK': audioContext.playRightKick(); break;
-            case 'LK': audioContext.playLeftKick(); break;
+            case 'LR': audioContext.playBothHandsClick(); break;
+            case 'RF': audioContext.playRightFoot(); break;
+            case 'LF': audioContext.playLeftFoot(); break;
             case ' ': audioContext.playNoHandsClick(); break;
             default: break;
         }
@@ -62,7 +62,7 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     const getStatus = (limb: Limb): { active: boolean; accented: boolean } => {
         const flash = flashes.find(flash =>
             flash.limb === limb ||
-            (flash.limb === 'RL' && (limb === 'R' || limb === 'L'))
+            (flash.limb === 'LR' && (limb === 'R' || limb === 'L'))
         );
         if (!flash) {
             return { active: false, accented: false };
@@ -72,7 +72,7 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
         const accented =
             !!currentNote &&
             (currentNote.limb === limb ||
-                (currentNote.limb === 'RL' && (limb === 'R' || limb === 'L'))) &&
+                (currentNote.limb === 'LR' && (limb === 'R' || limb === 'L'))) &&
             !!currentNote.accent;
 
         return { active: true, accented };
@@ -102,13 +102,13 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
             <Card.Content style={styles.content}>
                 <Switch value={playSounds} onValueChange={onSoundsToggleSwitch} />
                 <View style={styles.row}>
-                    {renderLimbCard('R', 'Right Hand')}
                     {renderLimbCard('L', 'Left Hand')}
+                    {renderLimbCard('R', 'Right Hand')}
                 </View>
-                {isKicks && (
+                {footWork && (
                     <View style={styles.row}>
-                        {renderLimbCard('RK', 'Right Kick')}
-                        {renderLimbCard('LK', 'Left Kick')}
+                        {renderLimbCard('LF', 'Left Kick')}
+                        {renderLimbCard('RF', 'Right Kick')}
                     </View>
                 )}
             </Card.Content>

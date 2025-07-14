@@ -1,53 +1,138 @@
-import React, {JSX} from "react";
-import { FlatList, TouchableOpacity, Text } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import Animated, {
+    useSharedValue,
+    useAnimatedGestureHandler,
+    runOnJS
+} from 'react-native-reanimated';
 
-const tempoValues = Array.from({ length: 300 }, (_, i) => i + 40);
+const tempoValues = Array.from({ length: 250 }, (_, i) => i + 30);
+const { width: screenWidth } = Dimensions.get('window');
 
 interface BpmRollerProps {
     selected: number;
     onSelect: (value: number) => void;
 }
 
-export default function BpmRoller({ selected, onSelect }: BpmRollerProps): JSX.Element {
+export default function BpmRoller({ selected, onSelect }: BpmRollerProps) {
+    const [currentValue, setCurrentValue] = useState(selected);
+    const startValue = useSharedValue(selected);
+
+    const getDisplayValues = (centerValue: number) => {
+        const centerIndex = tempoValues.indexOf(centerValue);
+        const displayValues = [];
+
+        // Handle edge cases with buffer
+        const start = Math.max(0, centerIndex - 2);
+        const end = Math.min(tempoValues.length - 1, centerIndex + 2);
+
+        for (let i = start; i <= end; i++) {
+            const relativeIndex = i - centerIndex;
+            displayValues.push({
+                value: tempoValues[i],
+                position: relativeIndex,
+                isCenter: i === centerIndex
+            });
+        }
+        return displayValues;
+    };
+
+    const displayValues = getDisplayValues(currentValue);
+
+    // Gesture handler with clear directional logic
+    const gestureHandler = useAnimatedGestureHandler({
+        onStart: () => {
+            startValue.value = currentValue;
+        },
+        onActive: (event) => {
+            const sensitivity = 0.2;
+            const deltaValue = Math.round(event.translationX * sensitivity);
+            let newValue = Math.max(40, Math.min(250, startValue.value - deltaValue));
+            newValue = Math.min(Math.max(newValue, 40), 250);
+
+            runOnJS(setCurrentValue)(newValue);
+        },
+        onEnd: () => {
+            runOnJS(onSelect)(currentValue);
+        },
+    });
+
     return (
-        <FlatList
-            horizontal
-            data={tempoValues}
-            keyExtractor={(item) => item.toString()}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-            snapToInterval={60} // width of each item + margin
-            decelerationRate="fast"
-            renderItem={({ item }) => {
-                const isSelected = item === selected;
-                return (
-                    <TouchableOpacity
-                        onPress={() => onSelect(item)}
-                        style={[
-                            {
-                                width: 50,
-                                marginHorizontal: 5,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: 8,
-                                borderWidth: 1,
-                                borderColor: isSelected ? "#1976d2" : "#ccc",
-                                backgroundColor: isSelected ? "#1976d2" : "#f0f0f0",
-                            },
-                        ]}
-                    >
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                color: isSelected ? "white" : "#333",
-                                fontWeight: isSelected ? "bold" : "normal",
-                            }}
-                        >
-                            {item}
-                        </Text>
-                    </TouchableOpacity>
-                );
-            }}
-        />
+        <View style={styles.rollerContainer}>
+            <PanGestureHandler onGestureEvent={gestureHandler}>
+                <Animated.View style={styles.gestureContainer}>
+                    <View style={styles.valuesContainer}>
+                        {displayValues.map((item, index) => (
+                            <View key={item.value} style={styles.valueItem}>
+                                <Text
+                                    style={[
+                                        styles.text,
+                                        item.isCenter && styles.selectedText,
+                                        { opacity: item.isCenter ? 1 : 0.4 }
+                                    ]}
+                                >
+                                    {item.value}
+                                </Text>
+                            </View>
+                        ))}
+                    </View>
+
+                    <View style={styles.centerIndicator} />
+                </Animated.View>
+            </PanGestureHandler>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    rollerContainer: {
+        height: 100,
+        backgroundColor: "#222d32",
+        borderRadius: 16,
+        justifyContent: "center",
+        alignItems: "center",
+        marginVertical: 16,
+        position: "relative",
+    },
+    gestureContainer: {
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    valuesContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "95%",
+        height: "100%",
+    },
+    valueItem: {
+        width: 60,
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100%",
+    },
+    text: {
+        fontSize: 16,
+        color: "#666",
+        fontWeight: "normal",
+    },
+    selectedText: {
+        color: "#fff",
+        fontSize: 32,
+        fontWeight: "bold",
+    },
+    centerIndicator: {
+        position: "absolute",
+        top: 20,
+        bottom: 20,
+        left: "50%",
+        marginLeft: '-1%',
+        width: 2,
+        backgroundColor: "#fff",
+        opacity: 0.5,
+        zIndex: 1,
+    },
+});

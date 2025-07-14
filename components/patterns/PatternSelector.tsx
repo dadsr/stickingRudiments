@@ -1,14 +1,18 @@
 import {JSX, useEffect, useState} from "react";
-import {ActivityIndicator, Card, Divider, Snackbar} from "react-native-paper";
+import {ActivityIndicator, Divider, Snackbar} from "react-native-paper";
 import {StickingPattern} from "../../modals/StickingPattern";
 import {services} from "../../services/servises";
 import {Animated, StyleSheet, View} from "react-native";
 import PatternCard from "./cards/PatternCard";
-import FilterPatterns from "./FilterPatterns";
-import {Difficulty, Importance} from "../../modals/types";
 import {usePattern} from "../../hooks/usePattern";
 import {useRouter} from "expo-router";
-import ScrollView = Animated.ScrollView;
+import {globalStyles} from "../../styles/styles";
+import {theme} from "../../styles/theme";
+import {Difficulty, Importance} from "../../modals/types";
+import FilterPatterns from "./FilterPatterns";
+
+
+const ScrollView = Animated.ScrollView;
 
 
 export default function PatternSelector():JSX.Element {
@@ -72,21 +76,21 @@ export default function PatternSelector():JSX.Element {
     if (loading) return <ActivityIndicator animating={true} />;
 
 
+
     return (
-        <View>
-            <FilterPatterns
-                difficulty = {difficultyFilter}
-                setDifficulty = {setDifficultyFilter}
-                importance = {importanceFilter}
-                setImportance = {setImportanceFilter}
-            />
+        <View style={styles.container}>
             <ScrollView>
-                <Card>
-                    <Card.Title title=" " subtitle="select sticking pattern to practice" />
-                    <Card.Content>
-                        <Divider />
-                        <View style={styles.grid}>
-                            {filteredPatterns.map((p) => (
+                <FilterPatterns
+                    difficulty = {difficultyFilter}
+                    setDifficulty = {setDifficultyFilter}
+                    importance = {importanceFilter}
+                    setImportance = {setImportanceFilter}
+                />
+                <View>
+                    <Divider style={globalStyles.divider}/>
+                    <View style={styles.grid}>
+                        {filteredPatterns.map((p) => (
+                            <View key={p.id} style={styles.cardWrapper}>
                                 <PatternCard
                                     key={p.id}
                                     patternContext={patternContext}
@@ -95,11 +99,11 @@ export default function PatternSelector():JSX.Element {
                                     onSelect={handleSelect}
                                     onDelete= {handleDelete}
                                 />
-                            ))}
-                        </View>
-                        <Divider />
-                    </Card.Content>
-                </Card>
+                            </View>
+                        ))}
+                    </View>
+                    <Divider style={globalStyles.divider}/>
+                </View>
                 <Snackbar
                     visible={snackbarVisible}
                     onDismiss={() => setSnackbarVisible(false)}
@@ -117,25 +121,25 @@ export default function PatternSelector():JSX.Element {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex:1,
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding:4,
+        backgroundColor: theme.colors.primaryContainer,
+    },
+    filterContainer: {
+        paddingTop: 1,
+    },
     grid: {
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "flex-start",
-
+        width: "100%",
     },
-    item: {
-        width: "45%",
-        margin: "2.5%",
-        padding: 16,
-        backgroundColor: "#f0f0f0",
-        borderRadius: 8,
-        alignItems: "center",
-    },
-    selected: {
-        backgroundColor: "#2196f3",
-    },
-    itemText: {
-        color: "#333",
-        fontWeight: "bold",
-    },
+    cardWrapper: {
+        width: '95%',
+        margin: 8,
+    }
 });

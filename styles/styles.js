@@ -22,6 +22,7 @@ export const globalStyles = StyleSheet.create({
     accentText: {
         color: theme.colors.accent,
         fontWeight: 'bold',
+        flexShrink: 1,
     },
     card: {
         borderRadius: theme.roundness,

@@ -1,6 +1,6 @@
 import {AudioPlayer, useAudioPlayer} from 'expo-audio';
 import { useCallback } from 'react';
-import {bothHandsSound, leftHandSound, leftKickSound, noHandsSound, rightHandSound, rightKickSound} from "../assets";
+import {bothHandsSound, leftHandSound, leftFootSound, noHandsSound, rightHandSound, rightFootSound} from "../assets";
 
 
 export const useAudio = () => {
@@ -10,8 +10,8 @@ export const useAudio = () => {
     const leftHandPlayer = useAudioPlayer(leftHandSound);
     const bothHandsPlayer = useAudioPlayer(bothHandsSound);
     const noHandsPlayer = useAudioPlayer(noHandsSound);
-    const rightKickPlayer = useAudioPlayer(rightKickSound);
-    const leftKickPlayer = useAudioPlayer(leftKickSound);
+    const rightFootPlayer = useAudioPlayer(rightFootSound);
+    const leftFootPlayer = useAudioPlayer(leftFootSound);
 
 
     const playAndReset = useCallback(async (player:AudioPlayer) => {
@@ -40,22 +40,22 @@ export const useAudio = () => {
         playAndReset(noHandsPlayer);
     }, [noHandsPlayer, playAndReset]);
 
-    const playRightKick = useCallback(() => {
+    const playRightFoot = useCallback(() => {
         console.log("useAudio - playRightKick");
-        playAndReset(rightKickPlayer);
-    }, [rightKickPlayer, playAndReset]);
+        playAndReset(rightFootPlayer);
+    }, [rightFootPlayer, playAndReset]);
 
-    const playLeftKick = useCallback(() => {
+    const playLeftFoot = useCallback(() => {
         console.log("useAudio - playLeftKick");
-        playAndReset(leftKickPlayer);
-    }, [leftKickPlayer, playAndReset]);
+        playAndReset(leftFootPlayer);
+    }, [leftFootPlayer, playAndReset]);
 
     return {
         playRightHandClick,
         playLeftHandClick,
         playBothHandsClick,
         playNoHandsClick,
-        playRightKick,
-        playLeftKick,
+        playRightFoot,
+        playLeftFoot,
     };
 };

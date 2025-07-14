@@ -10,7 +10,6 @@ interface NotationProps {
     pattern: PatternNote[];
 }
 
-// Helper function to determine the correct note icon based on pattern length
 const getNoteIconName = (patternLength: number): string => {
     if (patternLength <= 4) return 'music-note-quarter';
     if (patternLength <= 8) return 'music-note-eighth';
@@ -31,8 +30,8 @@ const Note = ({ note, beatNumber, isActive, iconName}: { note: PatternNote, beat
         </Text>
         <Icon
             name={iconName}
-            size={note.accent ? 38 : 36}
-            color={note.accent ? "#e53935" : isActive ? "#1976d2" : "black"}
+            size={note.accent ? 30 : 25}
+            color={note.accent ? "blue" : isActive ? "blue" : "black"}
             style={[
                 isActive && styles.activeIcon,
                 note.accent && styles.accentIcon
@@ -40,7 +39,7 @@ const Note = ({ note, beatNumber, isActive, iconName}: { note: PatternNote, beat
         />
         <Text style={[
             styles.beatNumberText,
-            note.accent && { fontWeight: "bold", fontSize: 22 },
+            note.accent && { fontWeight: "bold", fontSize: 20},
             isActive && styles.activeText
         ]}>
             {beatNumber}
@@ -89,72 +88,95 @@ export default function StickingNotation({ pattern }: NotationProps): JSX.Elemen
     );
 }
 
+
 const styles = StyleSheet.create({
     card: {
-        margin: 2,
+        margin: 8,
         borderRadius: 12,
         backgroundColor: "#f5f5f5",
+        elevation: 2,
+        shadowColor: "#000",
+        shadowOpacity: 0.05,
+        shadowRadius: 4
     },
     title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#1976d2",
+        fontSize: 22,
+        fontWeight: "700",
+        color: "#1a73e8",
+        marginBottom: 5
     },
     notationContainer: {
         flexDirection: "column",
-        paddingVertical: 2,
-        backgroundColor: '#fff',
+        alignItems: "center", // Ensures all lines are centered
+        padding: 4,
+        backgroundColor: "#fff",
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#eee',
+        borderColor: "#e0e0e0"
     },
     notationLine: {
         flexDirection: "row",
-        alignItems: "flex-end",
-        justifyContent: "space-around",
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        minHeight: 100,
+        alignItems: "center",
+        justifyContent: "center", // Center notes in the row
+        paddingVertical: 2,       // Smaller vertical gap
+        paddingHorizontal: 2,
+        minHeight: 60,            // Smaller line height
+        marginBottom: 2           // Small gap between lines
     },
     noteContainer: {
         alignItems: "center",
-        marginHorizontal: 1,
-        minWidth: 40,
+        justifyContent: "center",
+        marginHorizontal: 2,      // Small horizontal gap between notes
+        minWidth: 24,
+        maxWidth: 48,
+        flexShrink: 1
     },
     stickingText: {
-        fontSize: 18,
-        fontWeight: "bold",
-        color: "black",
-        marginBottom: 8,
-    },
-    accentText: {
-        color: "#e53935",
-        textShadowColor: "#fbc02d",
-        textShadowRadius: 4,
-    },
-    accentIcon: {
-        shadowColor: "#e53935",
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.7,
-        shadowRadius: 8,
+        fontSize: 15,
+        fontWeight: "700",
+        color: "#2d3748",
+        marginBottom: 5,
+        textAlign: "center"
     },
     accentMark: {
         position: "absolute",
-        top: -12,
+        top: -20,
+        left: "50%",
+        transform: [{ translateX: -8 }],
         fontSize: 16,
-        color: "#e53935",
-        fontWeight: "bold",
-        alignSelf: "center",
+        color: "black",
+        fontWeight: "900",
+        textShadowColor: "#e53e3e",
+        textShadowRadius: 3
     },
     beatNumberText: {
-        fontSize: 14,
-        color: 'gray',
+        fontSize: 10,
+        color: "#718096",
+        marginTop: 3,
+        textAlign: "center"
     },
     activeText: {
-        color: "#1976d2",
-        fontWeight: 'bold',
+        color: "#2563eb",
+        fontWeight: "900",
+        textShadowColor: "#2563eb",
+        textShadowRadius: 2
     },
     activeIcon: {
-        transform: [{ scale: 1.2 }],
+        transform: [{ scale: 0.9 }],
+        shadowColor: "#2563eb",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5
     },
+    accentIcon: {
+        shadowColor: "#e53e3e",
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.8,
+        shadowRadius: 10
+    },
+    accentText: {
+        color: "#e53e3e",
+        textShadowColor: "#f8d7da",
+        textShadowRadius: 4
+    }
 });

@@ -357,8 +357,8 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '19',
     'name': 'Flam',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
-      { 'limb': 'RL', 'accent': true }
+      { 'limb': 'LR', 'accent': true },
+      { 'limb': 'LR', 'accent': true }
     ],
     'tempo': 80,
     'description': 'A grace note played slightly before the primary note.',
@@ -370,10 +370,10 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '20',
     'name': 'Flam Accent',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': false }
     ],
@@ -387,9 +387,9 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '21',
     'name': 'Flam Tap',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'R', 'accent': false },
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false }
     ],
     'tempo': 90,
@@ -402,11 +402,11 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '22',
     'name': 'Flamacue',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': true },
       { 'limb': 'L', 'accent': false },
-      { 'limb': 'RL', 'accent': true }
+      { 'limb': 'LR', 'accent': true }
     ],
     'tempo': 80,
     'description': 'A five-note pattern with two flams and an accent.',
@@ -418,11 +418,11 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '23',
     'name': 'Flam Paradiddle',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'R', 'accent': false },
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'L', 'accent': false }
@@ -437,11 +437,11 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '24',
     'name': 'Single Flammed Mill',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': true },
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': true }
@@ -456,7 +456,7 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '25',
     'name': 'Flam Paradiddle-Diddle',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'R', 'accent': false },
@@ -473,10 +473,10 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '26',
     'name': 'Pataflafla',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
-      { 'limb': 'RL', 'accent': true }
+      { 'limb': 'LR', 'accent': true }
     ],
     'tempo': 75,
     'description': 'A four-note pattern with flams on the first and last notes.',
@@ -488,10 +488,10 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '27',
     'name': 'Swiss Army Triplet',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': false },
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false }
     ],
@@ -506,9 +506,9 @@ export const defaultPatterns: StickingPattern[] = [
     'name': 'Inverted Flam Tap',
     'notes': [
       { 'limb': 'R', 'accent': false },
-      { 'limb': 'RL', 'accent': true },
+      { 'limb': 'LR', 'accent': true },
       { 'limb': 'L', 'accent': false },
-      { 'limb': 'RL', 'accent': true }
+      { 'limb': 'LR', 'accent': true }
     ],
     'tempo': 90,
     'description': 'Flam taps where the flam lands on the upbeat.',
@@ -520,8 +520,8 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '29',
     'name': 'Flam Drag',
     'notes': [
-      { 'limb': 'RL', 'accent': true },
-      { 'limb': 'RL', 'accent': false },
+      { 'limb': 'LR', 'accent': true },
+      { 'limb': 'LR', 'accent': false },
       { 'limb': 'R', 'accent': false }
     ],
     'tempo': 70,
@@ -534,8 +534,8 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '30',
     'name': 'Drag',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
-      { 'limb': 'LK', 'accent': true }
+      { 'limb': 'RF', 'accent': true },
+      { 'limb': 'LF', 'accent': true }
     ],
     'tempo': 85,
     'description': 'Two grace notes (a double stroke) played before a primary note.',
@@ -547,9 +547,9 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '31',
     'name': 'Single Drag Tap',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
-      { 'limb': 'LK', 'accent': true },
+      { 'limb': 'LF', 'accent': true },
       { 'limb': 'R', 'accent': false }
     ],
     'tempo': 80,
@@ -562,11 +562,11 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '32',
     'name': 'Double Drag Tap',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
-      { 'limb': 'RK', 'accent': false },
+      { 'limb': 'RF', 'accent': true },
+      { 'limb': 'RF', 'accent': false },
       { 'limb': 'L', 'accent': true },
-      { 'limb': 'LK', 'accent': false },
-      { 'limb': 'LK', 'accent': true },
+      { 'limb': 'LF', 'accent': false },
+      { 'limb': 'LF', 'accent': true },
       { 'limb': 'R', 'accent': false }
     ],
     'tempo': 75,
@@ -579,10 +579,10 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '33',
     'name': 'Lesson 25',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': true },
-      { 'limb': 'LK', 'accent': true },
+      { 'limb': 'LF', 'accent': true },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': true }
     ],
@@ -596,7 +596,7 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '34',
     'name': 'Single Dragadiddle',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'R', 'accent': false }
@@ -612,7 +612,7 @@ export const defaultPatterns: StickingPattern[] = [
     'name': 'Drag Paradiddle #1',
     'notes': [
       { 'limb': 'R', 'accent': true },
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'R', 'accent': false }
@@ -629,7 +629,7 @@ export const defaultPatterns: StickingPattern[] = [
     'notes': [
       { 'limb': 'R', 'accent': true },
       { 'limb': 'R', 'accent': false },
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'R', 'accent': false }
@@ -644,7 +644,7 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '37',
     'name': 'Single Ratamacue',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': true },
       { 'limb': 'L', 'accent': false }
@@ -659,8 +659,8 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '38',
     'name': 'Double Ratamacue',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
-      { 'limb': 'RK', 'accent': false },
+      { 'limb': 'RF', 'accent': true },
+      { 'limb': 'RF', 'accent': false },
       { 'limb': 'L', 'accent': true },
       { 'limb': 'R', 'accent': false },
       { 'limb': 'L', 'accent': true }
@@ -675,9 +675,9 @@ export const defaultPatterns: StickingPattern[] = [
     'id': '39',
     'name': 'Triple Ratamacue',
     'notes': [
-      { 'limb': 'RK', 'accent': true },
-      { 'limb': 'RK', 'accent': false },
-      { 'limb': 'RK', 'accent': true },
+      { 'limb': 'RF', 'accent': true },
+      { 'limb': 'RF', 'accent': false },
+      { 'limb': 'RF', 'accent': true },
       { 'limb': 'L', 'accent': false },
       { 'limb': 'R', 'accent': true },
       { 'limb': 'L', 'accent': false }
