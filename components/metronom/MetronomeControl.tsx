@@ -3,6 +3,7 @@ import { useMetronomeContext } from "./MetronomeContext";
 import { Card, IconButton, Text } from "react-native-paper";
 import { Modal, View, StyleSheet,FlatList, TouchableOpacity } from "react-native";
 import BpmRoller from "./BpmRoller";
+import {globalStyles} from "../../styles/styles";
 
 interface metronomeProps {
     initTempo: number;
@@ -46,6 +47,7 @@ export default function MetronomeControl({ initTempo }: metronomeProps) {
                 if (nextValue === 0) {
                     if (intervalRef.current) clearInterval(intervalRef.current);
                     setIsCountingDown(false);
+
                     metronomeContext.start();
                 }
                 return nextValue;
@@ -70,8 +72,10 @@ export default function MetronomeControl({ initTempo }: metronomeProps) {
     };
 
     return (
-        <Card>
-            <Card.Content style={{ alignItems: 'center' }}>
+        <Card style={globalStyles.card}>
+            <Card.Title titleStyle={globalStyles.title} title="Tempo" />
+
+            <View>
                 {/* Countdown Modal */}
                 <Modal
                     transparent={true}
@@ -88,7 +92,6 @@ export default function MetronomeControl({ initTempo }: metronomeProps) {
                 {/* Metronome Controls */}
                 {tempoValue > 0 && (
                     <>
-                        <Text>Tempo: {Math.round(tempoValue)} BPM</Text>
                         <BpmRoller
                             selected={tempoValue}
                             onSelect={(value) => {
@@ -96,15 +99,21 @@ export default function MetronomeControl({ initTempo }: metronomeProps) {
                                 metronomeContext.changeTempo(value);
                             }}
                         />
+
                     </>
                 )}
-                <IconButton
-                    icon={metronomeContext.isPlaying === 'play' ? 'pause' : 'play'}
-                    size={40}
-                    iconColor={"#1976d2"}
-                    onPress={handlePlayPause}
-                />
-            </Card.Content>
+                <View style={styles.buttonContainer}>
+                    <Text>Tempo: {Math.round(tempoValue)} BPM</Text>
+                    <IconButton
+                        icon={metronomeContext.isPlaying === 'play' ? 'pause' : 'play'}
+                        containerColor="#DBD7D2"
+                        size={40}
+                        iconColor={"#1976d2"}
+                        onPress={handlePlayPause}
+                    />
+                </View>
+
+            </View>
         </Card>
     );
 }
@@ -117,7 +126,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
     modalContent: {
-        padding: 20,
+        padding: 50,
         borderRadius: 10,
     },
     countdownText: {
@@ -125,4 +134,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
     },
+    buttonContainer:{
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });

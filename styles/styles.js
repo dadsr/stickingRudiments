@@ -6,6 +6,18 @@ export const globalStyles = StyleSheet.create({
         flex: 1,
         backgroundColor: theme.colors.background,
     },
+    title: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "#1976d2",
+    },
+    card: {
+        margin: 8,
+        borderRadius: 12,
+        backgroundColor: "#f5f5f5",
+    },
+
+
     heading: {
         fontFamily: theme.typescale?.titleLarge?.fontFamily || 'System',
         fontWeight: theme.typescale?.titleLarge?.fontWeight || 'bold',
@@ -51,5 +63,15 @@ export const globalStyles = StyleSheet.create({
         borderRadius: theme.roundness,
         padding: 8,
         fontSize: theme.typescale?.bodyMedium?.fontSize || 16,
+    },
+});
+
+export const imageStyles = StyleSheet.create({
+    background: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+        borderRadius: theme.roundness,
+        overflow: 'hidden',
     },
 });

@@ -4,12 +4,14 @@ import {MetronomeProvider} from "../../components/metronom/MetronomeContext";
 import {useLocalSearchParams} from "expo-router";
 import {PatternNote} from "../../modals/types";
 import {Text} from "react-native-paper";
-import {Pressable, View} from "react-native";
+import {ImageBackground, Pressable, View} from "react-native";
 import DraggableFlatList, {RenderItemParams,} from "react-native-draggable-flatlist";
 import StickingVisualizer from "../../components/StickingVisualizer";
 import StickingNotation from "../../components/StickingNotation";
 import BeatCounter from "../../components/BeatCounter";
 import BarsCounter from "../../components/BarsCounter";
+import {containerImg} from "../../assets";
+import {imageStyles} from "../../styles/styles";
 
 interface PatternParam {
     id: string;
@@ -68,12 +70,18 @@ export default function Practice() {
     }
 
     return (
-
+        <ImageBackground
+            source={containerImg}
+            style={imageStyles.background}
+            resizeMode="cover"
+        >
         <MetronomeProvider key={patternData.id} pattern={patternData.pattern}>
             <View style={{ flex: 1 }}>
                 <Text>
                     {patternData.name} (ID: {patternData.id})
                 </Text>
+
+
                 <DraggableFlatList
                     data={items}
                     onDragEnd={({ data }) => setItems(data)}
@@ -83,8 +91,10 @@ export default function Practice() {
                             {item.component}
                         </Pressable>
                     )}
+                    contentContainerStyle={{ paddingBottom: 50, paddingTop: 25 }}
                 />
             </View>
         </MetronomeProvider>
+        </ImageBackground>
     );
 }

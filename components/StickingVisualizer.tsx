@@ -4,6 +4,7 @@ import {Card, Surface, Switch, Text} from "react-native-paper";
 import {useMetronomeContext} from "./metronom/MetronomeContext";
 import {useAudio} from "../hooks/useAudio";
 import {Limb, PatternNote} from "../modals/types";
+import {globalStyles} from "../styles/styles";
 
 // Define a type for our flash objects to manage visual state
 interface Flash {
@@ -84,11 +85,18 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     const renderLimbCard = (limb: Limb, label: string) => {
         const { active, accented } = getStatus(limb);
         return (
-            <Card style={active ? styles.activeCard : styles.inactiveCard}>
-                <Card.Title title={label} />
+            <Card style={[
+                styles.cardBase,
+                active && accented
+                    ? styles.activeAccentCard
+                    : active
+                        ? styles.activeCard
+                        : styles.inactiveCard
+            ]}>
+                <Card.Title title={accented ? `${label} >` : label} />
                 <Card.Content>
                     <Surface style={[styles.surface, active && styles.activeSurface]}>
-                        {accented && <Text style={styles.accentMark}>›</Text>}
+                        {accented && <Text style={styles.accentMark}>{'>'}›</Text>}
                         <Text style={[styles.limbText, accented && styles.accentText]}>{limb}</Text>
                     </Surface>
                 </Card.Content>
@@ -97,10 +105,16 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     };
 
     return (
-        <Card style={styles.container}>
-            <Card.Title titleStyle={styles.title} title="Visual" />
+
+        <Card style={globalStyles.card}>
+
+            <Card.Title titleStyle={globalStyles.title} title="Visual" />
+
             <Card.Content style={styles.content}>
-                <Switch value={playSounds} onValueChange={onSoundsToggleSwitch} />
+                <View style={styles.row}>
+                    <Text>Play Sounds:</Text>
+                    <Switch value={playSounds} onValueChange={onSoundsToggleSwitch} />
+                </View>
                 <View style={styles.row}>
                     {renderLimbCard('L', 'Left Hand')}
                     {renderLimbCard('R', 'Right Hand')}
@@ -112,7 +126,9 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
                     </View>
                 )}
             </Card.Content>
+
         </Card>
+
     );
 }
 
@@ -122,11 +138,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         backgroundColor: "#f5f5f5",
     },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#1976d2",
-    },
+
     content: {
         flexDirection: "column",
         alignItems: "center",
@@ -139,20 +151,31 @@ const styles = StyleSheet.create({
         marginTop: 12,
         marginVertical: 12,
     },
+
+    cardBase: {
+        width: "48%",
+        marginHorizontal: 6,
+        borderWidth: 2,
+        borderRadius: 8,
+    },
+
     activeCard: {
-        width: "48%",
-        marginHorizontal: 6,
-        borderWidth: 3,
-        borderColor: "#1976d2",
         backgroundColor: "rgb(236,242,0)",
+        borderColor: "#1976d2",
     },
+
+    activeAccentCard: {
+        backgroundColor: "rgb(242,0,0)",
+        borderColor: "#d21919",
+    },
+
+
     inactiveCard: {
-        width: "48%",
-        marginHorizontal: 6,
-        borderWidth: 1,
-        borderColor: "#ccc",
         backgroundColor: "#fff",
+        borderColor: "#ccc",
     },
+
+
     surface: {
         flexDirection: "row",
         alignItems: "center",
@@ -178,6 +201,7 @@ const styles = StyleSheet.create({
         textShadowColor: "#fbc02d",
         textShadowRadius: 4,
     },
+
     accentMark: {
         position: "absolute",
         top: -10,

@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, {
-    useSharedValue,
-    useAnimatedGestureHandler,
-    runOnJS
-} from 'react-native-reanimated';
+import React, {useState} from "react";
+import {Dimensions, ImageBackground, StyleSheet, Text, View} from "react-native";
+import {PanGestureHandler} from 'react-native-gesture-handler';
+import Animated, {runOnJS, useAnimatedGestureHandler, useSharedValue} from 'react-native-reanimated';
+import {roller} from "../../assets";
+import {imageStyles} from "../../styles/styles";
 
 const tempoValues = Array.from({ length: 250 }, (_, i) => i + 30);
 const { width: screenWidth } = Dimensions.get('window');
@@ -60,36 +58,44 @@ export default function BpmRoller({ selected, onSelect }: BpmRollerProps) {
 
     return (
         <View style={styles.rollerContainer}>
-            <PanGestureHandler onGestureEvent={gestureHandler}>
-                <Animated.View style={styles.gestureContainer}>
-                    <View style={styles.valuesContainer}>
-                        {displayValues.map((item, index) => (
-                            <View key={item.value} style={styles.valueItem}>
-                                <Text
-                                    style={[
-                                        styles.text,
-                                        item.isCenter && styles.selectedText,
-                                        { opacity: item.isCenter ? 1 : 0.4 }
-                                    ]}
-                                >
-                                    {item.value}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
+            <ImageBackground
+                source={roller}
+                style={imageStyles.background}
+                resizeMode="cover"
+            >
+                <PanGestureHandler onGestureEvent={gestureHandler}>
+                    <Animated.View style={styles.gestureContainer}>
+                        <View style={styles.valuesContainer}>
+                            {displayValues.map((item, index) => (
+                                <View key={item.value} style={styles.valueItem}>
+                                    <Text
+                                        style={[
+                                            styles.text,
+                                            item.isCenter && styles.selectedText,
+                                            { opacity: item.isCenter ? 1 : 0.4 }
+                                        ]}
+                                    >
+                                        {item.value}
+                                    </Text>
+                                </View>
+                            ))}
+                        </View>
 
-                    <View style={styles.centerIndicator} />
-                </Animated.View>
-            </PanGestureHandler>
+                        <View style={styles.centerIndicator} />
+                    </Animated.View>
+                </PanGestureHandler>
+            </ImageBackground>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     rollerContainer: {
+        width: 350,
         height: 100,
-        backgroundColor: "#222d32",
         borderRadius: 16,
+        borderWidth:2,
+        borderColor:'black',
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 16,
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
     },
     selectedText: {
         color: "#fff",
-        fontSize: 32,
+        fontSize: 20,
         fontWeight: "bold",
     },
     centerIndicator: {
