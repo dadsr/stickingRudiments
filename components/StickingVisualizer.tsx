@@ -65,16 +65,16 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
             flash.limb === limb ||
             (flash.limb === 'LR' && (limb === 'R' || limb === 'L'))
         );
+
         if (!flash) {
             return { active: false, accented: false };
         }
 
-        const currentNote = pattern[flash.id];
-        const accented =
-            !!currentNote &&
-            (currentNote.limb === limb ||
-                (currentNote.limb === 'LR' && (limb === 'R' || limb === 'L'))) &&
-            !!currentNote.accent;
+        const matchedLimb =
+            flash.limb === limb ||
+            (flash.limb === 'LR' && (limb === 'R' || limb === 'L'));
+
+        const accented = matchedLimb && metronomeContext.currentAccent === true;
 
         return { active: true, accented };
     };
@@ -121,8 +121,8 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
                 </View>
                 {footWork && (
                     <View style={styles.row}>
-                        {renderLimbCard('LF', 'Left Kick')}
-                        {renderLimbCard('RF', 'Right Kick')}
+                        {renderLimbCard('LF', 'Left Foot')}
+                        {renderLimbCard('RF', 'Right Foot')}
                     </View>
                 )}
             </Card.Content>
