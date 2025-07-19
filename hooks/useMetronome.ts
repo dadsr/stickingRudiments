@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {Limb, PatternNote} from "../modals/types";
 
-export const useMetronome = (pattern: PatternNote[]) => {
+export const useMetronome = (pattern: PatternNote[], initialTempo: number = 0) => {
     const [isPlaying, setIsPlaying] = useState<'play' | 'pause'>('pause');
-    const [tempo, setTempo] = useState(0);
+    const [tempo, setTempo] = useState(initialTempo);
     const [patternLength, setPatternLength] = useState(0);
     const [currentBeat, setCurrentBeat] = useState(0);
     const [currentNote, setCurrentNote] = useState<PatternNote | null>(null);
@@ -12,9 +12,12 @@ export const useMetronome = (pattern: PatternNote[]) => {
 
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Update currentLimb when pattern or currentBeat changes
     useEffect(() => {
-        if (pattern.length > 0) {
+        setTempo(initialTempo);
+    }, [initialTempo]);
+
+    useEffect(() => {
+        if (pattern.length > 0 && currentBeat < pattern.length) {
             setCurrentNote(pattern[currentBeat]);
             setPatternLength(pattern.length);
             setCurrentLimb(pattern[currentBeat].limb);
@@ -27,13 +30,6 @@ export const useMetronome = (pattern: PatternNote[]) => {
         }
     }, [pattern, currentBeat]);
 
-    // Reset currentBeat and currentLimb when pattern changes
-    // useEffect(() => {
-    //     setCurrentBeat(0);
-    //     setCurrentNote(pattern.length ? pattern[0] : null);
-    // }, [pattern]);
-
-    // Metronome interval
     useEffect(() => {
         if (isPlaying === 'play' && tempo > 0 && pattern.length > 0) {
             intervalRef.current = setInterval(() => {
@@ -41,24 +37,33 @@ export const useMetronome = (pattern: PatternNote[]) => {
             }, (60 / tempo) * 1000);
 
             return () => {
-                if (intervalRef.current) clearInterval(intervalRef.current);
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                    intervalRef.current = null;
+                }
             };
         } else if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
-    }, [isPlaying, tempo, pattern]);
+    }, [isPlaying, tempo, pattern.length]);
 
     const start = () => setIsPlaying('play');
+
     const stop = () => {
         setIsPlaying('pause');
         setCurrentBeat(0);
-        setCurrentNote(null);
-        setCurrentLimb(null);
-        setCurrentAccent(null);
-    }
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
+
     const togglePlay = () => setIsPlaying(prev => (prev === 'play' ? 'pause' : 'play'));
-    const changeTempo = (newTempo: number) => setTempo(newTempo);
+
+    const changeTempo = useCallback((newTempo: number) => {
+        setTempo(newTempo);
+    }, []);
 
     const reset = () => {
         setIsPlaying('pause');
@@ -68,6 +73,10 @@ export const useMetronome = (pattern: PatternNote[]) => {
         setCurrentNote(null);
         setCurrentLimb(null);
         setCurrentAccent(null);
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
     };
 
     return {

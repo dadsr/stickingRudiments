@@ -17,7 +17,6 @@ interface patternProps {
 }
 
 const PatternCard = React.memo( function PatternCard ({patternContext, router, pattern, onSelect, onDelete}:patternProps):JSX.Element {
-        console.log("PatternCard() id:"+pattern.id);
 
         const handleEdit = ()=>{
             console.log("PatternCard - handleEdit");

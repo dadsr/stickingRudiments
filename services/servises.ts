@@ -9,14 +9,10 @@ import {ImageKey, PatternNote, SerializedPattern} from "../modals/types";
 export class Services {
 
     constructor() {
-        //todo cleaning
-        this.clearPatterns();
         this.initDefaultsIfNeeded();
     }
 
     async initDefaultsIfNeeded(): Promise<void> {
-        console.log("initDefaultsIfNeeded()");
-
         const existing = await this.getPatterns();
         if (!existing || existing.length === 0) {
             await AsyncStorage.setItem("stickingPatterns", JSON.stringify(defaultPatterns)
@@ -26,7 +22,6 @@ export class Services {
 
 
     async getPatterns(): Promise<StickingPattern[]>{
-        console.log("getPatterns()");
         try{
             const storedPatterns = await AsyncStorage.getItem("stickingPatterns");
 
@@ -40,14 +35,12 @@ export class Services {
     }
 
     async addPattern (addedPattern:StickingPattern):Promise<void>{
-        console.log("addPattern() - adding: ",addedPattern.name );
         await this.modifyPatterns((patterns:StickingPattern[]) =>
             [...patterns,{...addedPattern, id: this.getNextId(patterns)},]
         );
     }
 
     async updatePattern (updatedPattern:StickingPattern):Promise<void> {
-        console.log("updatePattern() - updating: ",updatedPattern.name );
         await this.modifyPatterns((patterns:StickingPattern[])=> {
             const index = patterns.findIndex((p) => p.id === updatedPattern.id);
             if (index !== -1) {
@@ -60,14 +53,12 @@ export class Services {
     }
 
     async deletePattern (deletedPattern:StickingPattern):Promise<void>{
-        console.log("deletePattern() - deleting: ",deletedPattern.name );
         await this.modifyPatterns((patterns:StickingPattern[]) =>
             patterns.filter((p) => p.id !== deletedPattern.id)
         );
     }
 
     async clearPatterns(): Promise<void> {
-        console.log("clearPatterns()");
         await AsyncStorage.removeItem("stickingPatterns");
     }
 

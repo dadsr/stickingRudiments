@@ -4,17 +4,16 @@ import {PatternNote} from "../../modals/types";
 
 type MetronomeContextType = ReturnType<typeof useMetronome>;
 
- interface metronomeProps{
+ interface MetronomeProviderProps{
      children: ReactNode;
      pattern: PatternNote[];
+     initialTempo: number;
  }
 
 const MetronomeContext = createContext<MetronomeContextType | undefined>(undefined);
 
-export const MetronomeProvider = ({ children, pattern }: metronomeProps) => {
-    console.log("MetronomeProvider()");
-
-    const metronome = useMetronome(pattern);
+export const MetronomeProvider = ({ children, pattern, initialTempo }: MetronomeProviderProps) => {
+    const metronome = useMetronome(pattern, initialTempo);
     return (
         <MetronomeContext.Provider value={metronome}>
             {children}
@@ -23,8 +22,6 @@ export const MetronomeProvider = ({ children, pattern }: metronomeProps) => {
 };
 
 export const useMetronomeContext = () => {
-    console.log("useMetronomeContext()");
-
     const context = useContext(MetronomeContext);
     if (!context) {
         throw new Error("useMetronomeContext must be used within a MetronomeProvider");

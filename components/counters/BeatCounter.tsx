@@ -1,9 +1,10 @@
 import React, { JSX } from "react";
 import { StyleSheet } from "react-native";
 import { Card, Text } from 'react-native-paper';
-import { useMetronomeContext } from "./metronom/MetronomeContext";
-import {globalStyles, imageStyles} from "../styles/styles";
-import {containerImg} from "../assets";
+import { useMetronomeContext } from "../metronom/MetronomeContext";
+import {globalStyles, imageStyles} from "../../styles/styles";
+import {containerImg} from "../../assets";
+import {theme} from "../../styles/theme";
 
 interface beatCount{
     totalBeats: number;
@@ -18,7 +19,7 @@ export default function BeatCounter({totalBeats}:beatCount): JSX.Element {
     return (
         <Card style={globalStyles.card}>
             <Card.Title title="Beat" titleStyle={globalStyles.title} />
-            <Card.Content style={styles.content}>
+            <Card.Content style={globalStyles.content}>
                 <Text style={styles.beatText}>
                     {beatToShow}
                     <Text style={styles.totalBeatsText}>
@@ -31,16 +32,11 @@ export default function BeatCounter({totalBeats}:beatCount): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-    content: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingBottom: 20,
-    },
+
     beatText: {
         fontSize: 100,
         fontWeight: 'bold',
-        color: '#1976d2',
+        color: theme.colors.primary,
         textAlign: 'center',
         lineHeight: 80,
     },

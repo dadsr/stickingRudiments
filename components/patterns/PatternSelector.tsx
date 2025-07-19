@@ -2,21 +2,20 @@ import {JSX, useEffect, useState} from "react";
 import {ActivityIndicator, Divider, Snackbar} from "react-native-paper";
 import {StickingPattern} from "../../modals/StickingPattern";
 import {services} from "../../services/servises";
-import {Animated, StyleSheet, View} from "react-native";
+import {Animated, ImageBackground, StyleSheet, View} from "react-native";
 import PatternCard from "./cards/PatternCard";
 import {usePattern} from "../../hooks/usePattern";
 import {useRouter} from "expo-router";
-import {globalStyles} from "../../styles/styles";
-import {theme} from "../../styles/theme";
+import {globalStyles, imageStyles} from "../../styles/styles";
 import {Difficulty, Importance} from "../../modals/types";
 import FilterPatterns from "./FilterPatterns";
+import {containerImg} from "../../assets";
 
 
 const ScrollView = Animated.ScrollView;
 
 
 export default function PatternSelector():JSX.Element {
-    console.log("PatternSelector()");
     const router = useRouter();
     const patternContext = usePattern();
 
@@ -48,8 +47,6 @@ export default function PatternSelector():JSX.Element {
     };
 
     const handleDelete = (pattern: StickingPattern) => {
-        console.log("PatternSelector - handleDelete");
-
         services.deletePattern(pattern)
             .then(() => {
                 setStickingPatterns(prevPatterns => prevPatterns.filter(p => p.id !== pattern.id));
@@ -78,45 +75,49 @@ export default function PatternSelector():JSX.Element {
 
 
     return (
-        <View style={styles.container}>
-            <ScrollView>
-                <FilterPatterns
-                    difficulty = {difficultyFilter}
-                    setDifficulty = {setDifficultyFilter}
-                    importance = {importanceFilter}
-                    setImportance = {setImportanceFilter}
-                />
-                <View>
-                    <Divider style={globalStyles.divider}/>
-                    <View style={styles.grid}>
-                        {filteredPatterns.map((p) => (
-                            <View key={p.id} style={styles.cardWrapper}>
-                                <PatternCard
-                                    key={p.id}
-                                    patternContext={patternContext}
-                                    router={router}
-                                    pattern={p}
-                                    onSelect={handleSelect}
-                                    onDelete= {handleDelete}
-                                />
-                            </View>
-                        ))}
+        <ImageBackground
+            source={containerImg}
+            style={imageStyles.background}
+            resizeMode="cover"
+        >
+                <ScrollView>
+                    <FilterPatterns
+                        difficulty = {difficultyFilter}
+                        setDifficulty = {setDifficultyFilter}
+                        importance = {importanceFilter}
+                        setImportance = {setImportanceFilter}
+                    />
+                    <View>
+                        <Divider style={globalStyles.divider}/>
+                        <View style={styles.grid}>
+                            {filteredPatterns.map((p) => (
+                                <View key={p.id} style={styles.cardWrapper}>
+                                    <PatternCard
+                                        key={p.id}
+                                        patternContext={patternContext}
+                                        router={router}
+                                        pattern={p}
+                                        onSelect={handleSelect}
+                                        onDelete= {handleDelete}
+                                    />
+                                </View>
+                            ))}
+                        </View>
+                        <Divider style={globalStyles.divider}/>
                     </View>
-                    <Divider style={globalStyles.divider}/>
-                </View>
-                <Snackbar
-                    visible={snackbarVisible}
-                    onDismiss={() => setSnackbarVisible(false)}
-                    duration={3000}
-                    action={{
-                        label: "OK",
-                        onPress: () => setSnackbarVisible(false),
-                    }}
-                >
-                    Pattern cleared successfully!
-                </Snackbar>
-            </ScrollView>
-        </View>
+                    <Snackbar
+                        visible={snackbarVisible}
+                        onDismiss={() => setSnackbarVisible(false)}
+                        duration={3000}
+                        action={{
+                            label: "OK",
+                            onPress: () => setSnackbarVisible(false),
+                        }}
+                    >
+                        Pattern cleared successfully!
+                    </Snackbar>
+                </ScrollView>
+        </ImageBackground>
     )
 }
 
@@ -127,7 +128,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         padding:4,
-        backgroundColor: theme.colors.primaryContainer,
     },
     filterContainer: {
         paddingTop: 1,

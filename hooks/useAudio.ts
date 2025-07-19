@@ -1,11 +1,11 @@
 import {AudioPlayer, useAudioPlayer} from 'expo-audio';
 import { useCallback } from 'react';
-import {bothHandsSound, leftHandSound, leftFootSound, noHandsSound, rightHandSound, rightFootSound} from "../assets";
+import {accentSound, bothHandsSound, leftHandSound, leftFootSound, noHandsSound, rightHandSound, rightFootSound} from "../assets";
 
 
 export const useAudio = () => {
-    console.log("useAudio()");
 
+    const accentPlayer = useAudioPlayer(accentSound);
     const rightHandPlayer = useAudioPlayer(rightHandSound);
     const leftHandPlayer = useAudioPlayer(leftHandSound);
     const bothHandsPlayer = useAudioPlayer(bothHandsSound);
@@ -15,38 +15,35 @@ export const useAudio = () => {
 
 
     const playAndReset = useCallback(async (player:AudioPlayer) => {
-        console.log("useAudio - playAndReset");
         await player.seekTo(0);
         await player.play();
     }, []);
 
+    const playAccent = useCallback(() => {
+        playAndReset(accentPlayer);
+    }, [leftHandPlayer, playAndReset]);
+
     const playRightHandClick = useCallback(() => {
-        console.log("useAudio - playRightHandClick");
         playAndReset(rightHandPlayer);
     }, [rightHandPlayer, playAndReset]);
 
     const playLeftHandClick = useCallback(() => {
-        console.log("useAudio - playLeftHandClick");
         playAndReset(leftHandPlayer);
     }, [leftHandPlayer, playAndReset]);
 
     const playBothHandsClick = useCallback(() => {
-        console.log("useAudio - playBothHandsClick");
         playAndReset(bothHandsPlayer);
     }, [bothHandsPlayer, playAndReset]);
 
     const playNoHandsClick = useCallback(() => {
-        console.log("useAudio - playNoHandsClick");
         playAndReset(noHandsPlayer);
     }, [noHandsPlayer, playAndReset]);
 
     const playRightFoot = useCallback(() => {
-        console.log("useAudio - playRightKick");
         playAndReset(rightFootPlayer);
     }, [rightFootPlayer, playAndReset]);
 
     const playLeftFoot = useCallback(() => {
-        console.log("useAudio - playLeftKick");
         playAndReset(leftFootPlayer);
     }, [leftFootPlayer, playAndReset]);
 
@@ -57,5 +54,6 @@ export const useAudio = () => {
         playNoHandsClick,
         playRightFoot,
         playLeftFoot,
+        playAccent,
     };
 };

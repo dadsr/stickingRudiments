@@ -1,10 +1,11 @@
 import React, {JSX} from "react";
 import {StyleSheet, View} from "react-native";
 import {Card, Text} from 'react-native-paper';
-import {PatternNote} from "../modals/types";
-import {useMetronomeContext} from "./metronom/MetronomeContext";
+import {PatternNote} from "../../modals/types";
+import {useMetronomeContext} from "../metronom/MetronomeContext";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {globalStyles} from "../styles/styles";
+import {globalStyles} from "../../styles/styles";
+import {theme} from "../../styles/theme";
 
 interface NotationProps {
     pattern: PatternNote[];
@@ -143,24 +144,24 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     accentIcon: {
-        shadowColor: "#e53e3e",
+        shadowColor: '#640D5F',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.8,
         shadowRadius: 10
     },
     accentText: {
-        color: "black",
+        color: theme.colors.onPrimaryContainer,
         textShadowRadius: 4,
     },
     activeText: {
-        color: "#2563eb",
+        color: theme.colors.primary,
         fontWeight: "900",
         textShadowColor: "#2563eb",
         textShadowRadius: 2,
     },
     activeIcon: {
         transform: [{ scale: 0.9 }],
-        shadowColor: "#2563eb",
+        shadowColor: theme.colors.primary,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 5,

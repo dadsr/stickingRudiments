@@ -1,18 +1,18 @@
-import React, {JSX, useEffect, useState} from "react";
-import {StyleSheet, View} from "react-native";
+import React, {JSX, useEffect, useRef, useState} from "react";
+import {Animated, StyleSheet, View} from "react-native";
 import {Card, Surface, Switch, Text} from "react-native-paper";
-import {useMetronomeContext} from "./metronom/MetronomeContext";
-import {useAudio} from "../hooks/useAudio";
-import {Limb, PatternNote} from "../modals/types";
-import {globalStyles} from "../styles/styles";
+import {useMetronomeContext} from "../metronom/MetronomeContext";
+import {useAudio} from "../../hooks/useAudio";
+import {Limb, PatternNote} from "../../modals/types";
+import {globalStyles} from "../../styles/styles";
+import {theme} from "../../styles/theme";
 
-// Define a type for our flash objects to manage visual state
+
 interface Flash {
     id: number; // The beat number ensures each flash is unique
     limb: Limb;
 }
 
-// The component now takes the pattern as a prop
 interface VisualizerProps {
     pattern: PatternNote[];
 }
@@ -24,17 +24,23 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     const footWork: boolean = pattern.some(note => note.limb === 'LF' || note.limb === 'RF');
     const [playSounds,setPlaySounds] = useState<boolean>(true);
 
+    // Sound effect
     useEffect(() => {
         if (metronomeContext.isPlaying === 'pause' || playSounds === false) return;
-        switch (metronomeContext.currentLimb) {
-            case 'R': audioContext.playRightHandClick(); break;
-            case 'L': audioContext.playLeftHandClick(); break;
-            case 'LR': audioContext.playBothHandsClick(); break;
-            case 'RF': audioContext.playRightFoot(); break;
-            case 'LF': audioContext.playLeftFoot(); break;
-            case ' ': audioContext.playNoHandsClick(); break;
-            default: break;
+        if (metronomeContext.currentAccent){
+            audioContext.playAccent();
+        }else{
+            switch (metronomeContext.currentLimb) {
+                case 'R': audioContext.playRightHandClick(); break;
+                case 'L': audioContext.playLeftHandClick(); break;
+                case 'LR': audioContext.playBothHandsClick(); break;
+                case 'RF': audioContext.playRightFoot(); break;
+                case 'LF': audioContext.playLeftFoot(); break;
+                case ' ': audioContext.playNoHandsClick(); break;
+                default: break;
+            }
         }
+
     }, [metronomeContext.currentBeat, metronomeContext.isPlaying]);
 
     // This effect manages the visual "flash" for each beat.
@@ -47,15 +53,14 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
         const currentBeat = metronomeContext.currentBeat;
         const newFlash: Flash = { id: currentBeat, limb: metronomeContext.currentLimb };
 
-        // Add a new flash for the current beat
         setFlashes(prev => [...prev, newFlash]);
 
-        // Schedule the removal of this specific flash to create a timed pulse
+
         const timer = setTimeout(() => {
             setFlashes(prev => prev.filter(flash => flash.id !== currentBeat));
-        }, 150); // The flash will last for 150ms
+        }, 200);
 
-        // Clean up the timer if the effect re-runs or the component unmounts
+
         return () => clearTimeout(timer);
 
     }, [metronomeContext.currentBeat, metronomeContext.isPlaying]);
@@ -84,23 +89,50 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
     }
     const renderLimbCard = (limb: Limb, label: string) => {
         const { active, accented } = getStatus(limb);
+        const scaleAnim = useRef(new Animated.Value(1)).current;
+
+        useEffect(() => {
+            if (active) {
+                Animated.sequence([
+                    Animated.timing(scaleAnim, {
+                        toValue: 1.10,
+                        duration: 80,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(scaleAnim, {
+                        toValue: 1,
+                        duration: 60,
+                        useNativeDriver: true,
+                    }),
+                ]).start();
+            }
+        }, [active, scaleAnim]);
+
         return (
-            <Card style={[
-                styles.cardBase,
-                active && accented
-                    ? styles.activeAccentCard
-                    : active
-                        ? styles.activeCard
-                        : styles.inactiveCard
-            ]}>
-                <Card.Title title={accented ? `${label} >` : label} />
-                <Card.Content>
-                    <Surface style={[styles.surface, active && styles.activeSurface]}>
-                        {accented && <Text style={styles.accentMark}>{'>'}›</Text>}
-                        <Text style={[styles.limbText, accented && styles.accentText]}>{limb}</Text>
-                    </Surface>
-                </Card.Content>
-            </Card>
+            <Animated.View
+                style={[
+                    styles.cardBase,
+                    active && styles.popShadow,
+                    { transform: [{ scale: scaleAnim }] }
+                ]}
+            >
+                <Card style={[
+                    styles.innerCard,
+                    active && accented
+                        ? styles.activeAccentCard
+                        : active
+                            ? styles.activeCard
+                            : styles.inactiveCard
+                ]}>
+                    <Card.Title title={label} />
+                    <Card.Content>
+                        <View style={[styles.surface, active && styles.activeSurface]}>
+                            {accented && <Text style={styles.accentMark}>{'  >'}</Text>}
+                            <Text style={[styles.limbText, accented && styles.accentText]}>{limb}</Text>
+                        </View>
+                    </Card.Content>
+                </Card>
+            </Animated.View>
         );
     };
 
@@ -110,7 +142,7 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
 
             <Card.Title titleStyle={globalStyles.title} title="Visual" />
 
-            <Card.Content style={styles.content}>
+            <Card.Content>
                 <View style={styles.row}>
                     <Text>Play Sounds:</Text>
                     <Switch value={playSounds} onValueChange={onSoundsToggleSwitch} />
@@ -139,11 +171,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#f5f5f5",
     },
 
-    content: {
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
     row: {
         flexDirection: "row",
         alignItems: "center",
@@ -155,23 +182,32 @@ const styles = StyleSheet.create({
     cardBase: {
         width: "48%",
         marginHorizontal: 6,
+        borderRadius: 15,
+    },
+
+    innerCard: {
         borderWidth: 2,
-        borderRadius: 8,
+        borderColor: "#ccc",
+        borderRadius: 15,
+        overflow: "hidden",
+    },
+    popShadow: {
+        elevation: 14,
     },
 
     activeCard: {
-        backgroundColor: "rgb(236,242,0)",
-        borderColor: "#1976d2",
+        backgroundColor: '#FFB200',
+        borderColor: '#640D5F',
     },
 
     activeAccentCard: {
-        backgroundColor: "rgb(242,0,0)",
-        borderColor: "#d21919",
+        backgroundColor: '#EB5B00',
+        borderColor: '#640D5F',
     },
 
 
     inactiveCard: {
-        backgroundColor: "#fff",
+        backgroundColor: '#EFEFEF',
         borderColor: "#ccc",
     },
 
@@ -183,22 +219,22 @@ const styles = StyleSheet.create({
         padding: 12,
         marginBottom: 4,
         elevation: 2,
-        backgroundColor: "#fff",
+        backgroundColor: '#EFEFEF',
         borderRadius: 50,
     },
     activeSurface: {
         elevation: 6,
-        backgroundColor: "#fabbfb",
+        backgroundColor: '#D91656',
         borderRadius: 25,
     },
     limbText: {
         fontSize: 25,
         fontWeight: "bold",
-        color: "#1976d2",
+        color: '#640D5F',
     },
     accentText: {
-        color: "#e53935",
-        textShadowColor: "#fbc02d",
+        color: '#EB5B00',
+        textShadowColor: '#FFB200',
         textShadowRadius: 4,
     },
 
@@ -207,8 +243,8 @@ const styles = StyleSheet.create({
         top: -10,
         left: "50%",
         transform: [{ translateX: -8 }],
-        fontSize: 18,
-        color: "#e53935",
+        fontSize: 25,
+        color: '#640D5F',
         fontWeight: "bold",
         zIndex: 2,
     },

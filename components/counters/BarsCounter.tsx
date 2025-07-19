@@ -1,10 +1,9 @@
 import React, {JSX, useEffect, useState} from "react";
-import {ImageBackground, StyleSheet} from "react-native";
-import { Card, Text } from 'react-native-paper';
-import { useMetronomeContext } from "./metronom/MetronomeContext";
-import {globalStyles, imageStyles} from "../styles/styles";
-import {containerImg} from "../assets";
-
+import {StyleSheet} from "react-native";
+import {Card, Text} from 'react-native-paper';
+import {useMetronomeContext} from "../metronom/MetronomeContext";
+import {globalStyles} from "../../styles/styles";
+import {theme} from "../../styles/theme";
 
 
 export default function BarsCounter(): JSX.Element {
@@ -34,7 +33,7 @@ export default function BarsCounter(): JSX.Element {
     return (
         <Card style={globalStyles.card}>
             <Card.Title title="Bars played" titleStyle={globalStyles.title} />
-            <Card.Content style={styles.content}>
+            <Card.Content style={globalStyles.content}>
                 <Text style={styles.barText}>
                     {bars}
                 </Text>
@@ -45,17 +44,10 @@ export default function BarsCounter(): JSX.Element {
 
 const styles = StyleSheet.create({
 
-
-    content: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingBottom: 20,
-    },
     barText: {
         fontSize: 100,
         fontWeight: 'bold',
-        color: '#1976d2',
+        color: theme.colors.primary,
         textAlign: 'center',
         lineHeight: 80,
     },

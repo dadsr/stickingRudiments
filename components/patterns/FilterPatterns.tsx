@@ -1,7 +1,6 @@
 import { JSX } from "react";
-import { Animated, StyleSheet, View, Text } from "react-native";
-import { Button, Divider } from "react-native-paper";
-import { theme } from "../../styles/theme";
+import { Animated, View, Text } from "react-native";
+import { Button } from "react-native-paper";
 import { globalStyles } from "../../styles/styles";
 import { Difficulty, Importance } from "../../modals/types";
 
@@ -23,23 +22,32 @@ export default function FilterPatterns({
                                            setImportance,
                                        }: filtersProps): JSX.Element {
 
-
     return (
         <View style={{ paddingTop: 20 }}>
-            <View style={styles.filtersContainer}>
+            <View style={globalStyles.filtersContainer}>
                 <Text style={[globalStyles.accentText, { flexShrink: 1 }]}>Difficulty:</Text>
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollViewContent}
+                    contentContainerStyle={globalStyles.scrollViewContent}
                 >
                     {difficulties.map(d => (
                         <Button
                             key={d}
                             mode={difficulty === d ? "contained" : "outlined"}
                             onPress={() => setDifficulty(difficulty === d ? null : d as Difficulty)}
-                            style={styles.button}
-                            labelStyle={styles.buttonLabel}
+                            style={[
+                                globalStyles.button,
+                                difficulty === d
+                                    ? globalStyles.buttonSelected
+                                    : globalStyles.buttonUnselected,
+                            ]}
+                            labelStyle={[
+                                globalStyles.buttonLabel,
+                                difficulty === d
+                                    ? globalStyles.buttonLabelSelected
+                                    : globalStyles.buttonLabelUnselected,
+                            ]}
                             compact
                             accessibilityLabel={`Filter by ${d}`}
                         >
@@ -52,15 +60,25 @@ export default function FilterPatterns({
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.scrollViewContent}
+                    contentContainerStyle={globalStyles.scrollViewContent}
                 >
                     {importances.map(i => (
                         <Button
                             key={i}
                             mode={importance === i ? "contained" : "outlined"}
                             onPress={() => setImportance(importance === i ? null : i as Importance)}
-                            style={styles.button}
-                            labelStyle={styles.buttonLabel}
+                            style={[
+                                globalStyles.button,
+                                importance === i
+                                    ? globalStyles.buttonSelected
+                                    : globalStyles.buttonUnselected,
+                            ]}
+                            labelStyle={[
+                                globalStyles.buttonLabel,
+                                importance === i
+                                    ? globalStyles.buttonLabelSelected
+                                    : globalStyles.buttonLabelUnselected,
+                            ]}
                             compact
                             accessibilityLabel={`Filter by ${i}`}
                         >
@@ -68,40 +86,7 @@ export default function FilterPatterns({
                         </Button>
                     ))}
                 </ScrollView>
-
-                <Divider style={{ marginVertical: 10 }} />
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    filtersContainer: {
-        flexDirection: 'column',
-        backgroundColor: theme.colors.primaryContainer,
-        width: '100%',
-        padding: 8,
-        borderRadius: 8,
-        marginVertical: 8,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-    },
-    filterTitle: {
-        padding: 10
-    },
-    scrollViewContent: {
-        flexDirection: "row",
-        justifyContent: "center",
-        margin: 5,
-    },
-    button: {
-        backgroundColor: "white",
-        marginHorizontal: 2,
-    },
-    buttonLabel: {
-        fontSize: 12,
-    }
-});
