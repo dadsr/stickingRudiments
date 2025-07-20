@@ -18,13 +18,13 @@ interface patternProps {
 
 const PatternCard = React.memo( function PatternCard ({patternContext, router, pattern, onSelect, onDelete}:patternProps):JSX.Element {
 
-        const handleEdit = ()=>{
-            console.log("PatternCard - handleEdit");
-            router.push(`/edit/${pattern.id}`);
-        }
+    const handleEdit = ()=>{
+        const patternJson = encodeURIComponent(JSON.stringify(pattern));
+        router.push(`/pattern-form?pattern=${patternJson}`);
+    }
 
 
-        return (
+    return (
             <Card >
                 <Card.Title
                     title={`${pattern.name} (${pattern.id})`}

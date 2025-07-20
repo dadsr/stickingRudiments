@@ -1,5 +1,5 @@
 import {JSX, useEffect, useState} from "react";
-import {ActivityIndicator, Divider, Snackbar} from "react-native-paper";
+import {ActivityIndicator, Divider, Snackbar, FAB} from "react-native-paper";
 import {StickingPattern} from "../../modals/StickingPattern";
 import {services} from "../../services/servises";
 import {Animated, ImageBackground, StyleSheet, View} from "react-native";
@@ -117,6 +117,14 @@ export default function PatternSelector():JSX.Element {
                         Pattern cleared successfully!
                     </Snackbar>
                 </ScrollView>
+            <FAB
+                style={globalStyles.fab}
+                icon="plus"
+                color="#fff"
+                size="medium"
+                onPress={() => router.push("/pattern-form")}
+                visible
+            />
         </ImageBackground>
     )
 }

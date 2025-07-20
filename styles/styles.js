@@ -144,6 +144,14 @@ export const globalStyles = StyleSheet.create({
         paddingBottom: 8,
     }),
 
+    fab: {
+        position: 'absolute',
+        color:'#fff',
+        margin: 10,
+        right: 0,
+        bottom: 0,
+        zIndex: 2,
+    },
 
 
 });
