@@ -1,5 +1,7 @@
 
 export type Limb = " "|"R" | "L" | "LR" | "RF" | "LF" ;
+export const limbOptions: Limb[] = [" ", "R", "L", "LR", "RF", "LF"];
+
 export type Importance = 'low' | 'medium' | 'high';
 export const importanceOptions: Importance[] = ["low", "medium", "high"];
 

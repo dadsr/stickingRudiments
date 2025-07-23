@@ -24,6 +24,13 @@ export const globalStyles = StyleSheet.create({
         paddingVertical: 10,
         paddingBottom: 20,
     },
+    row: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 12,
+        marginVertical: 12,
+    },
     heading: {
         fontFamily: theme.typescale?.titleLarge?.fontFamily ?? 'System',
         fontWeight: theme.typescale?.titleLarge?.fontWeight ?? 'bold',
@@ -53,6 +60,7 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: theme.colors.surface,
         borderColor: theme.colors.primary,
     },
+
     buttonSelected: {
         backgroundColor: theme.colors.onPrimaryContainer,
         borderColor: theme.colors.secondary,
@@ -75,7 +83,17 @@ export const globalStyles = StyleSheet.create({
         color: theme.colors.primary,
         fontWeight: 'normal',
     },
-
+    saveButtonContainer: {
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    saveButton: {
+        backgroundColor: theme.colors.primary,
+        color: theme.colors.onPrimary,
+        borderRadius: theme.roundness,
+        width:'70%',
+    },
     divider: {
         height: 1,
         backgroundColor: theme.colors.outlineVariant ?? theme.colors.outline ?? '#ccc',
@@ -140,6 +158,15 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: theme.colors.primaryContainer,
         borderColor: theme.colors.onPrimary,
     },
+    menu: {
+
+    },
+    menuButton: {
+        color: theme.colors.primaryContainer,
+        fontWeight: 'bold',
+        backgroundColor:theme.colors.onPrimary,
+    },
+
     scrollBar: Platform.select({
         paddingBottom: 8,
     }),
@@ -151,6 +178,26 @@ export const globalStyles = StyleSheet.create({
         right: 0,
         bottom: 0,
         zIndex: 2,
+    },
+
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.68)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: '25%',
+    },
+    modalContent: {
+        width: '100%',
+        maxHeight: '100%',
+        justifyContent:'center',
+        borderRadius: 15,
+        padding: 20,
+        elevation: 10,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        backgroundColor:'yellow',
     },
 
 

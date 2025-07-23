@@ -1,8 +1,5 @@
-import { StickingPattern } from "../modals/StickingPattern";
-
-export const defaultPatterns: StickingPattern[] = [
+[
   {
-    'id': '1',
     'name': 'Single Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -17,7 +14,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '2',
     'name': 'Single Stroke Four',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -32,7 +28,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '3',
     'name': 'Single Stroke Seven',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -50,7 +45,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '4',
     'name': 'Multiple Bounce Roll',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -63,7 +57,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '5',
     'name': 'Double Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -78,7 +71,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '6',
     'name': 'Five Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -94,8 +86,7 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '7',
-    'name': 'Six Stroke Roll',
+       'name': 'Six Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': true },
       { 'limb': 'L', 'accent': false },
@@ -111,7 +102,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '8',
     'name': 'Seven Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -129,7 +119,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '9',
     'name': 'Nine Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -149,7 +138,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '10',
     'name': 'Ten Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -170,7 +158,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '11',
     'name': 'Eleven Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -192,7 +179,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '12',
     'name': 'Thirteen Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -216,7 +202,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '13',
     'name': 'Fifteen Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -242,7 +227,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '14',
     'name': 'Seventeen Stroke Roll',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -270,7 +254,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '15',
     'name': 'Single Paradiddle',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -289,7 +272,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '16',
     'name': 'Double Paradiddle',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -312,7 +294,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '17',
     'name': 'Triple Paradiddle',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -331,7 +312,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '18',
     'name': 'Paradiddle-Diddle',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -354,7 +334,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '19',
     'name': 'Flam',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -367,7 +346,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '20',
     'name': 'Flam Accent',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -384,7 +362,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '21',
     'name': 'Flam Tap',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -399,7 +376,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '22',
     'name': 'Flamacue',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -415,7 +391,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '23',
     'name': 'Flam Paradiddle',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -434,7 +409,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '24',
     'name': 'Single Flammed Mill',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -453,7 +427,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '25',
     'name': 'Flam Paradiddle-Diddle',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -470,7 +443,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '26',
     'name': 'Pataflafla',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -485,7 +457,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '27',
     'name': 'Swiss Army Triplet',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -502,7 +473,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '28',
     'name': 'Inverted Flam Tap',
     'notes': [
       { 'limb': 'R', 'accent': false },
@@ -517,7 +487,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '29',
     'name': 'Flam Drag',
     'notes': [
       { 'limb': 'LR', 'accent': true },
@@ -531,7 +500,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '30',
     'name': 'Drag',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -544,7 +512,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '31',
     'name': 'Single Drag Tap',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -559,7 +526,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '32',
     'name': 'Double Drag Tap',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -576,7 +542,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '33',
     'name': 'Lesson 25',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -593,7 +558,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '34',
     'name': 'Single Dragadiddle',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -608,7 +572,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '35',
     'name': 'Drag Paradiddle #1',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -624,7 +587,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '5.png'
   },
   {
-    'id': '36',
     'name': 'Drag Paradiddle #2',
     'notes': [
       { 'limb': 'R', 'accent': true },
@@ -641,7 +603,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '1.png'
   },
   {
-    'id': '37',
     'name': 'Single Ratamacue',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -656,7 +617,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '2.png'
   },
   {
-    'id': '38',
     'name': 'Double Ratamacue',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -672,7 +632,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '3.png'
   },
   {
-    'id': '39',
     'name': 'Triple Ratamacue',
     'notes': [
       { 'limb': 'RF', 'accent': true },
@@ -689,7 +648,6 @@ export const defaultPatterns: StickingPattern[] = [
     'backgroundImage': '4.png'
   },
   {
-    'id': '40',
     'name': 'Rudimental Pyramid',
     'notes': [
       { 'limb': 'R', 'accent': false },

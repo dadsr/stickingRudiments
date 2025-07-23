@@ -143,16 +143,16 @@ export default function StickingVisualizer({ pattern }: VisualizerProps): JSX.El
             <Card.Title titleStyle={globalStyles.title} title="Visual" />
 
             <Card.Content>
-                <View style={styles.row}>
+                <View style={globalStyles.row}>
                     <Text>Play Sounds:</Text>
                     <Switch value={playSounds} onValueChange={onSoundsToggleSwitch} />
                 </View>
-                <View style={styles.row}>
+                <View style={globalStyles.row}>
                     {renderLimbCard('L', 'Left Hand')}
                     {renderLimbCard('R', 'Right Hand')}
                 </View>
                 {footWork && (
-                    <View style={styles.row}>
+                    <View style={globalStyles.row}>
                         {renderLimbCard('LF', 'Left Foot')}
                         {renderLimbCard('RF', 'Right Foot')}
                     </View>
@@ -169,14 +169,6 @@ const styles = StyleSheet.create({
         margin: 8,
         borderRadius: 12,
         backgroundColor: "#f5f5f5",
-    },
-
-    row: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 12,
-        marginVertical: 12,
     },
 
     cardBase: {

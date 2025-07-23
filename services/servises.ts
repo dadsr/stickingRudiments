@@ -1,14 +1,14 @@
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {defaultPatterns} from "../data/stickingPatterns";
+import defaultPatterns from "../assets/data/patterns.json";
 import {StickingPattern} from "../modals/StickingPattern";
-import {ImageKey, PatternNote, SerializedPattern} from "../modals/types";
+import {ImageKey, SerializedPattern} from "../modals/types";
 
 
 
 export class Services {
 
     constructor() {
+        // this.clearPatterns();
         this.initDefaultsIfNeeded();
     }
 
@@ -19,7 +19,6 @@ export class Services {
             );
         }
     }
-
 
     async getPatterns(): Promise<StickingPattern[]>{
         try{

@@ -1,11 +1,11 @@
-import {JSX, useEffect, useState} from "react";
+import {JSX, useCallback, useEffect, useState} from "react";
 import {ActivityIndicator, Divider, Snackbar, FAB} from "react-native-paper";
 import {StickingPattern} from "../../modals/StickingPattern";
 import {services} from "../../services/servises";
 import {Animated, ImageBackground, StyleSheet, View} from "react-native";
 import PatternCard from "./cards/PatternCard";
 import {usePattern} from "../../hooks/usePattern";
-import {useRouter} from "expo-router";
+import {useFocusEffect, useRouter} from "expo-router";
 import {globalStyles, imageStyles} from "../../styles/styles";
 import {Difficulty, Importance} from "../../modals/types";
 import FilterPatterns from "./FilterPatterns";
@@ -60,7 +60,7 @@ export default function PatternSelector():JSX.Element {
     useEffect(() => {
         services.getPatterns()
             .then((fetchedPatterns:StickingPattern[]) => {
-                setStickingPatterns(fetchedPatterns);
+                setStickingPatterns(fetchedPatterns.reverse());
             })
             .catch(error => {
                 console.error(error);
@@ -69,6 +69,23 @@ export default function PatternSelector():JSX.Element {
                 setLoading(false);
             });
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            services.getPatterns()
+                .then(fetchedPatterns => {
+                    setStickingPatterns(fetchedPatterns.reverse());
+                })
+                .catch(error => {
+                    console.error(error);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }, [])
+    );
+
 
     if (loading) return <ActivityIndicator animating={true} />;
 
